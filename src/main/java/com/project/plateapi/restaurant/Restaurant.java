@@ -6,16 +6,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
 @Entity(name = "restaurant")
+@NoArgsConstructor
 public class Restaurant {
 
-    protected Restaurant() {
-
-    }
     public Restaurant(String name, String category) {
         this.name = name;
         this.category = category;
@@ -25,7 +24,7 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Size(min=1, message = "Name should have atleast 1 characters")
+    @Size(min=1, message = "Name should have at least 1 characters")
     private String name;
 
     private String category;

@@ -3,10 +3,19 @@ package com.project.plateapi.comment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.plateapi.user.User;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class Comment {
     @Id
@@ -15,28 +24,13 @@ public class Comment {
 
     private String content;
 
-    @ManyToOne
-    @JsonIgnore
+    @Builder
+    public Comment(String content){
+        this.content=content;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")
     private User user;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    @Override
-    public String toString() {
-        return "Post [id=" + id + ", description=" + content + "]";
-    }
 }
