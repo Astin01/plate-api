@@ -1,12 +1,13 @@
 package com.project.plateapi.restaurant;
 
-import com.project.plateapi.restaurant.dto.RestaurantUpdateRequestDto;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RestaurantRepository  extends JpaRepository<Restaurant, Integer> {
+public interface RestaurantRepository  extends JpaRepository<Restaurant, Long> {
     List<Restaurant> findAllByCategory(String category);
 
-    Restaurant findOneByName(String name);
+    Optional<Restaurant> findById(Long id);
+
+    Restaurant findByName(String name);
 }
