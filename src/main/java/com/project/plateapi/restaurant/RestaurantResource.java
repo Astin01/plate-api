@@ -1,9 +1,13 @@
 package com.project.plateapi.restaurant;
 
+import com.project.plateapi.comment.Comment;
 import com.project.plateapi.restaurant.dto.RestaurantUpdateRequestDto;
+import com.project.plateapi.user.User;
+import com.project.plateapi.user.UserNotFoundException;
 import jakarta.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,13 +46,19 @@ public class RestaurantResource {
     }
 
     @PutMapping("/api/restaurants/id/{id}")
-    public void updateRestaurant(@PathVariable int id,@RequestBody RestaurantUpdateRequestDto requestDto ) {
+    public void updateRestaurant(@PathVariable Long id,@RequestBody RestaurantUpdateRequestDto requestDto ) {
         service.update(id, requestDto);
     }
 
     @DeleteMapping("/api/restaurants/id/{id}")
-    public void deleteRestaurant(@PathVariable int id) {
+    public void deleteRestaurant(@PathVariable Long id) {
         service.deleteRestaurant(id);
     }
 
+    @GetMapping("/api/restaurants/{name}/comments")
+    public List<Comment> retrieveCommentsForRestaurant(@PathVariable String name) {
+        Restaurant restaurant = service.findRestaurantName(name);
+
+        return restaurant.getComments();
+    }
 }
