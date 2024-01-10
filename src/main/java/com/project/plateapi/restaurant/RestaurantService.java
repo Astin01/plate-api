@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
     @Transactional
-    public void update(int id, RestaurantUpdateRequestDto updateRequestDto){
+    public void update(Long id, RestaurantUpdateRequestDto updateRequestDto){
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id= " + id));
         restaurant.update(updateRequestDto.getName(), updateRequestDto.getCategory());
     }
@@ -30,14 +31,14 @@ public class RestaurantService {
 
     public Restaurant findRestaurantName(String name) {
         String convertedName = URLDecoder.decode(name, StandardCharsets.UTF_8);
-        return restaurantRepository.findOneByName(convertedName);
+        return restaurantRepository.findByName(convertedName);
     }
 
     public void createNewRestaurant(Restaurant restaurant) {
         restaurantRepository.save(restaurant);
     }
 
-    public void deleteRestaurant(int id) {
+    public void deleteRestaurant(Long id) {
         restaurantRepository.deleteById(id);
     }
 }
