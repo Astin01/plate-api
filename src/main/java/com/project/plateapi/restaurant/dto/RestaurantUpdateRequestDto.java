@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 public class RestaurantUpdateRequestDto {
     private String name;
     private String category;
+    private String icon;
 
     @Builder
-    public RestaurantUpdateRequestDto(String name, String category){
-        this.name=name;
-        this.category=category;
+    public RestaurantUpdateRequestDto(String name, String category, String icon) {
+        this.name = name;
+        this.category = category;
+        this.icon = icon;
     }
 }
