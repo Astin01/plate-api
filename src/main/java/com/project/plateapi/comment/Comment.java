@@ -33,20 +33,20 @@ public class Comment {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String comment;
 
-    @Column(name = "created_date")
+    @Column(name = "CREATED_DATE", nullable = false)
     @CreatedDate
     private String createdDate;
 
-    @Column(name = "modified_date")
+    @Column(name = "MODIFIED_DATE")
     @LastModifiedDate
     private String modifiedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "USER_ID")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
+    @JoinColumn(name = "RESTAURANT_ID")
     private Restaurant restaurant;
 
     public void update(String comment, String modifiedDate) {

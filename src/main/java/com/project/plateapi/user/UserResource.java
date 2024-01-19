@@ -1,62 +1,50 @@
 package com.project.plateapi.user;
 
 import com.project.plateapi.comment.Comment;
+import com.project.plateapi.user.dto.UserRequestDto;
 import jakarta.validation.Valid;
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 public class UserResource {
-    private final UserRepository repository;
+    private final UserService service;
 
-    public UserResource(UserRepository repository) {
-        this.repository = repository;
-    }
-
-    @GetMapping("/api/users")
-    public List<User> retrieveAllUsers() {
-        return repository.findAll();
+    public UserResource(UserService service) {
+        this.service = service;
     }
 
     @PostMapping("/api/users")
     public void createUser(@Valid @RequestBody User user) {
-        repository.save(user);
+        service.createUser(user);
     }
 
     @GetMapping("/api/users/{id}")
-    public User retrieveUser(@PathVariable int id) {
-        Optional<User> user = repository.findById(id);
-
-        if(user.isEmpty())
-            throw new UserNotFoundException("id:"+id);
-
-       return user.get();
+    public User retrieveUser(@PathVariable Long id) {
+        return service.findById(id);
     }
 
     @DeleteMapping("/api/users/{id}")
-    public void deleteUser(@PathVariable int id) {
-        repository.deleteById(id);
+    public void deleteUser(@PathVariable Long id) {
+        service.deleteUser(id);
     }
 
+    @PutMapping("/api/users/{id}")
+    public void updateUser(@PathVariable Long id, @RequestBody UserRequestDto dto) {
+        service.updateUser(id, dto);
+    }
 
     @GetMapping("/api/users/{id}/comments")
-    public List<Comment> retrieveCommentsForUser(@PathVariable int id) {
-        Optional<User> user = repository.findById(id);
+    public List<Comment> retrieveCommentsForUser(@PathVariable Long id) {
+        User user = service.findById(id);
 
-        if(user.isEmpty())
-            throw new UserNotFoundException("id:"+id);
-
-        return user.get().getComments();
+        return user.getComments();
 
     }
 

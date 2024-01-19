@@ -16,8 +16,9 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
     @Transactional
-    public void update(Long id, RestaurantUpdateRequestDto updateRequestDto){
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id= " + id));
+    public void update(Long id, RestaurantUpdateRequestDto updateRequestDto) {
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id= " + id));
         restaurant.update(updateRequestDto.getName(), updateRequestDto.getCategory());
     }
 
@@ -34,7 +35,7 @@ public class RestaurantService {
         return restaurantRepository.findByName(convertedName);
     }
 
-    public void createNewRestaurant(Restaurant restaurant) {
+    public void createRestaurant(Restaurant restaurant) {
         restaurantRepository.save(restaurant);
     }
 

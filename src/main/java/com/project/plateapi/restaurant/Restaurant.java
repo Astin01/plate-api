@@ -25,21 +25,23 @@ import lombok.Setter;
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "restaurant_id")
+    @Column(name = "ID")
     private Long id;
 
-    @Size(min=1, message = "Name should have at least 1 characters")
+    @Size(min = 1, message = "Name should have at least 1 characters")
     private String name;
 
     private String category;
 
-    @OneToMany(mappedBy = "restaurant",cascade = CascadeType.REMOVE)
+    private String icon;
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE)
     @OrderBy("id asc")
     private List<Comment> comments = new ArrayList<>();
 
-    public void update(String name, String category){
-        this.name=name;
-        this.category=category;
+    public void update(String name, String category) {
+        this.name = name;
+        this.category = category;
     }
 
 }

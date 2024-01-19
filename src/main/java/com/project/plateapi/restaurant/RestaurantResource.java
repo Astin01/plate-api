@@ -32,7 +32,7 @@ public class RestaurantResource {
 
     @PostMapping("/api/restaurants")
     public void createRestaurant(@Valid @RequestBody Restaurant restaurant) {
-        service.createNewRestaurant(restaurant);
+        service.createRestaurant(restaurant);
     }
 
     @GetMapping("/api/restaurants/category/{category}")
@@ -46,8 +46,8 @@ public class RestaurantResource {
     }
 
     @PutMapping("/api/restaurants/id/{id}")
-    public void updateRestaurant(@PathVariable Long id,@RequestBody RestaurantUpdateRequestDto requestDto ) {
-        service.update(id, requestDto);
+    public void updateRestaurant(@PathVariable Long id, @RequestBody RestaurantUpdateRequestDto dto) {
+        service.update(id, dto);
     }
 
     @DeleteMapping("/api/restaurants/id/{id}")
