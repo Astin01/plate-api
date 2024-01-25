@@ -1,8 +1,7 @@
 package com.project.plateapi.comment;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.plateapi.restaurant.Restaurant;
-import com.project.plateapi.user.User;
+import com.project.plateapi.user.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -43,7 +42,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
-    private User user;
+    private Users user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RESTAURANT_ID")

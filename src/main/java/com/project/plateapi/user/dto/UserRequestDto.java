@@ -1,6 +1,6 @@
 package com.project.plateapi.user.dto;
 
-import com.project.plateapi.user.User;
+import com.project.plateapi.user.Users;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
@@ -21,8 +21,8 @@ public class UserRequestDto {
     private String createdDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     private String deletedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
-    public User toEntity() {
-        User user = User.builder()
+    public Users toEntity() {
+        Users user = Users.builder()
                 .id(id)
                 .userId(userId)
                 .userPassword(userPassword)

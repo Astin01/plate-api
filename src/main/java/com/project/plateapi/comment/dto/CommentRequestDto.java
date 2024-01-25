@@ -2,7 +2,7 @@ package com.project.plateapi.comment.dto;
 
 import com.project.plateapi.comment.Comment;
 import com.project.plateapi.restaurant.Restaurant;
-import com.project.plateapi.user.User;
+import com.project.plateapi.user.Users;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ public class CommentRequestDto {
     private String comment;
     private String createdDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     private String modifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-    private User user;
+    private Users user;
     private Restaurant restaurant;
 
     public Comment toEntity() {

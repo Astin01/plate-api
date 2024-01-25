@@ -1,7 +1,6 @@
 package com.project.plateapi.user;
 
 import com.project.plateapi.comment.Comment;
-import com.project.plateapi.role.Role;
 import com.project.plateapi.user_role.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +26,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -57,17 +56,19 @@ public class User {
     @LastModifiedDate
     private String deletedDate;
 
-    private boolean enabled = Boolean.FALSE;
+    @Column(name = "ENABLED")
+    private boolean enabled = Boolean.TRUE;
 
+    @Column(name = "DELETED")
     private boolean deleted = Boolean.FALSE;
-
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
 
-    public void update(String name, String nickname) {
+    public void update(String name, String nickname, String userPassword) {
         this.name = name;
         this.nickname = nickname;
+        this.userPassword = userPassword;
     }
 
 

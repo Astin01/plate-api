@@ -22,12 +22,12 @@ public class UserService {
 
     @Transactional
     public void updateUser(Long id, UserRequestDto dto) {
-        User user = userRepository.findById(id)
+        Users user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. id= " + id));
         user.update(dto.getName(), dto.getNickname());
     }
 
-    public User findById(Long id) {
+    public Users findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("no such id exist"));
     }

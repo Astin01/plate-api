@@ -3,13 +3,9 @@ package com.project.plateapi.comment;
 import com.project.plateapi.comment.dto.CommentRequestDto;
 import com.project.plateapi.restaurant.Restaurant;
 import com.project.plateapi.restaurant.RestaurantRepository;
-import com.project.plateapi.restaurant.dto.RestaurantUpdateRequestDto;
-import com.project.plateapi.user.User;
+import com.project.plateapi.user.Users;
 import com.project.plateapi.user.UserRepository;
 import jakarta.transaction.Transactional;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +18,7 @@ public class CommentService {
 
     @Transactional
     public void createComment(String nickname, Long id, CommentRequestDto dto) {
-        User user = userRepository.findByNickname(nickname);
+        Users user = userRepository.findByNickname(nickname);
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("댓글 쓰기 실패."));
 

@@ -13,20 +13,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserResource {
+public class UserController {
     private final UserService service;
 
-    public UserResource(UserService service) {
+    public UserController(UserService service) {
         this.service = service;
     }
 
     @PostMapping("/api/users")
-    public void createUser(@Valid @RequestBody User user) {
+    public void createUser(@Valid @RequestBody Users user) {
         service.createUser(user);
     }
 
     @GetMapping("/api/users/{id}")
-    public User retrieveUser(@PathVariable Long id) {
+    public Users retrieveUser(@PathVariable Long id) {
         return service.findById(id);
     }
 
@@ -42,7 +42,7 @@ public class UserResource {
 
     @GetMapping("/api/users/{id}/comments")
     public List<Comment> retrieveCommentsForUser(@PathVariable Long id) {
-        User user = service.findById(id);
+        Users user = service.findById(id);
 
         return user.getComments();
 
