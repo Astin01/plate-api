@@ -7,6 +7,7 @@ import com.project.plateapi.user.Users;
 import com.project.plateapi.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
+
 
     @Transactional
     public void createComment(String nickname, Long id, CommentRequestDto dto) {

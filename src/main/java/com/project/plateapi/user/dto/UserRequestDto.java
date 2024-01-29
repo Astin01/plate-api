@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UserRequestDto {
-    private Long id;
+    private long id;
     private String userId;
     private String userPassword;
     private String name;
