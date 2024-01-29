@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class RestaurantResource {
+public class RestaurantController {
     private final RestaurantService service;
 
-    public RestaurantResource(RestaurantService service) {
+    public RestaurantController(RestaurantService service) {
         this.service = service;
     }
 
@@ -50,7 +50,7 @@ public class RestaurantResource {
         service.deleteRestaurant(id);
     }
 
-    @GetMapping("/api/restaurants/{name}/comments")
+    @GetMapping("/api/restaurants/comments/{name}")
     public List<Comment> retrieveCommentsForRestaurant(@PathVariable String name) {
         Restaurant restaurant = service.findRestaurantName(name);
 
