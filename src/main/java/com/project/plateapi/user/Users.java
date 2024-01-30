@@ -1,9 +1,15 @@
 package com.project.plateapi.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.plateapi.comment.Comment;
+import com.project.plateapi.role.Role;
 import com.project.plateapi.user_role.UserRole;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,6 +44,9 @@ public class Users {
     @Column(name = "USER_PASSWORD")
     private String userPassword;
 
+    @Column(name = "USER_PASSWORD_CHECK")
+    private String userPasswordCheck;
+
     @Size(min = 2, message = "Name should have at least 2 characters")
     @Column(name = "USER_NAME")
     private String name;
@@ -45,7 +54,10 @@ public class Users {
     @Column(name = "USER_NICKNAME")
     private String nickname;
 
-    @OneToMany(mappedBy = "user")
+    @Column(name = "USER_EMAIL")
+    private String email;
+
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<UserRole> userRoles = new ArrayList<>();
 
     @Column(name = "CREATED_DATE")
@@ -59,16 +71,14 @@ public class Users {
     @Column(name = "ENABLED")
     private boolean enabled = Boolean.TRUE;
 
-    @Column(name = "DELETED")
-    private boolean deleted = Boolean.FALSE;
-
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
 
-    public void update(String name, String nickname, String userPassword) {
-        this.name = name;
-        this.nickname = nickname;
-        this.userPassword = userPassword;
+    public void update(Users user) {
+        this.name = user.getName();
+        this.nickname = user.getNickname();
+        this.email = user.getEmail();
+        this.userPassword = user.getUserPassword();
     }
 
 
