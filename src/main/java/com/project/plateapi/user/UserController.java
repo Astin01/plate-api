@@ -28,7 +28,10 @@ public class UserController {
     }
 
     @PostMapping("/api/users")
-    public ResponseEntity<?> createUser(@Valid @RequestBody Users user) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDto dto) {
+        Users user = dto.toEntity();
+        log.info("User"+user);
+        log.info("dto"+dto);
         boolean result = service.createUser(user);
         if(result){
             log.info("회원가입 성공");
@@ -65,9 +68,9 @@ public class UserController {
     }
 
     @Secured("USER")
-    @PutMapping("/api/users/{id}")
-    public void updateUser(@PathVariable Long id, @RequestBody UserRequestDto dto) {
-        service.updateUser(id, dto);
+    @PutMapping("/api/users")
+    public void updateUser(@RequestBody UserRequestDto dto) {
+        service.updateUser(dto);
     }
 
     @GetMapping("/api/users/{id}/comments")
