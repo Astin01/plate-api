@@ -61,7 +61,7 @@ public class WebSecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() //정적 자원 인가
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/api/users/signIn").permitAll()
+                        .requestMatchers("/api/users").permitAll()
                         .requestMatchers("/api/restaurants/**").permitAll()
                         .requestMatchers("/api/comment/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
