@@ -1,5 +1,6 @@
 package com.project.plateapi.user_role;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.plateapi.role.Role;
 import com.project.plateapi.user.Users;
 import jakarta.persistence.Column;
