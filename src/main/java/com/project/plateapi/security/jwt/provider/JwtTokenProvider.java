@@ -110,8 +110,10 @@ public class JwtTokenProvider {
             try {
                 Users userInfo = userRepository.findById(no)
                         .orElseThrow(() -> new IllegalArgumentException("no such id exist"));
+                user.setId(userInfo.getId());
                 user.setName(userInfo.getName());
                 user.setNickname(userInfo.getNickname());
+                user.setEmail(userInfo.getEmail());
             } catch (Exception e) {
                 log.error(e.getMessage());
                 log.error("토큰 유효 -> db 추가 정보 조회시 에러 발생");

@@ -13,21 +13,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UserRequestDto {
-    private long id;
     private String userId;
     private String userPassword;
+    private String email;
     private String name;
     private String nickname;
     private String createdDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-    private String deletedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    private String deletedDate = null;
 
     public Users toEntity() {
         Users user = Users.builder()
-                .id(id)
                 .userId(userId)
                 .userPassword(userPassword)
                 .name(name)
                 .nickname(nickname)
+                .email(email)
                 .createdDate(createdDate)
                 .deletedDate(deletedDate)
                 .build();
