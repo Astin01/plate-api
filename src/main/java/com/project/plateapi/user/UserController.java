@@ -53,10 +53,10 @@ public class UserController {
         return service.retrieveUserInfo(customUser);
     }
 
-    @Secured("ADMIN")
+    @Secured("USER")
     @DeleteMapping("/api/users/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        boolean result = service.deleteUser(id);
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal CustomUser customUser,@PathVariable String id) {
+        boolean result = service.deleteUser(customUser,id);
 
         if(result){
             log.info("삭제 성공");

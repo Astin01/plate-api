@@ -71,10 +71,18 @@ public class UserService {
         return true;
     }
 
-    public boolean deleteUser(Long id) {
-        userRepository.deleteById(id);
-        return true;
-    }
+    @Transactional
+    public boolean deleteUser(CustomUser customUser,String userId) {
+            Users user = customUser.getUser();
+            String jwtUserId = user.getUserId();
+            if(jwtUserId.equals(userId)){
+                userRepository.deleteByUserId(userId);
+                return true;
+            }else {
+                return false;
+            }
+
+    };
 
     public void login(Users user, HttpServletRequest request) throws Exception {
         String userId = user.getUserId();
