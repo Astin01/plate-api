@@ -1,7 +1,7 @@
 package com.project.plateapi.security.jwt.provider;
 
-import com.project.plateapi.constants.SecurityConstants;
-import com.project.plateapi.props.JwtProps;
+import com.project.plateapi.security.jwt.constants.SecurityConstants;
+import com.project.plateapi.security.jwt.props.JwtProps;
 import com.project.plateapi.role.Role;
 import com.project.plateapi.security.custom.dto.CustomUser;
 import com.project.plateapi.security.jwt.constants.JwtConstants;

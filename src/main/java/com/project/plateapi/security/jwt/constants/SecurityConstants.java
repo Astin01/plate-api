@@ -1,4 +1,4 @@
-package com.project.plateapi.constants;
+package com.project.plateapi.security.jwt.constants;
 
 public final class SecurityConstants {
 
