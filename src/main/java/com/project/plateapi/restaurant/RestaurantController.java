@@ -49,11 +49,4 @@ public class RestaurantController {
     public void deleteRestaurant(@PathVariable Long id) {
         service.deleteRestaurant(id);
     }
-
-    @GetMapping("/api/restaurants/comments/{name}")
-    public List<Comment> retrieveCommentsForRestaurant(@PathVariable String name) {
-        Restaurant restaurant = service.findRestaurantName(name);
-
-        return restaurant.getComments();
-    }
 }

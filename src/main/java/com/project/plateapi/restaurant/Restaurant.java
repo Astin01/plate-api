@@ -35,10 +35,6 @@ public class Restaurant {
 
     private String icon;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE)
-    @OrderBy("id asc")
-    private List<Comment> comments = new ArrayList<>();
-
     public void update(String name, String category) {
         this.name = name;
         this.category = category;
