@@ -1,5 +1,6 @@
 package com.project.plateapi.comment;
 
+import com.project.plateapi.discussion.Discussion;
 import com.project.plateapi.restaurant.Restaurant;
 import com.project.plateapi.user.Users;
 import jakarta.persistence.Column;
@@ -45,8 +46,8 @@ public class Comment {
     private Users user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RESTAURANT_ID")
-    private Restaurant restaurant;
+    @JoinColumn(name = "DISCUSSION_ID")
+    private Discussion discussion;
 
     public void update(String comment, String modifiedDate) {
         this.comment = comment;
