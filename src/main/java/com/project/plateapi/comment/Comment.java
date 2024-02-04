@@ -28,9 +28,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long id;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(name="COMMENT", columnDefinition = "TEXT", nullable = false)
     private String comment;
 
     @Column(name = "CREATED_DATE", nullable = false)
