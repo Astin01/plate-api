@@ -12,12 +12,14 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DiscussionRequestDto {
     private String title;
+    private String content;
     private final boolean closed = false;
     private final String createdDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
     public Discussion toEntity() {
         Discussion discussion = Discussion.builder()
                 .title(title)
+                .content(content)
                 .closed(closed)
                 .createdDate(createdDate)
                 .build();
