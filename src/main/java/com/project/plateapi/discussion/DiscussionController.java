@@ -41,7 +41,7 @@ public class DiscussionController {
 
     @PutMapping("/api/discussion/{id}")
     public void updateDiscussionTitle(@PathVariable long id, @RequestBody DiscussionEditRequestDto dto) {
-        service.changeDiscussionTitle(id, dto);
+        service.editDiscussion(id, dto);
     }
 
     @DeleteMapping("/api/discussion/{id}")

@@ -23,11 +23,12 @@ public class DiscussionService {
     }
 
     @Transactional
-    public void changeDiscussionTitle(Long id, DiscussionEditRequestDto dto) {
+    public void editDiscussion(Long id, DiscussionEditRequestDto dto) {
         Discussion discussion = discussionRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         discussion.setTitle(dto.getTitle());
+        discussion.setContent(dto.getContent());
 
-        discussion.changeTitle(discussion);
+        discussion.edit(discussion);
     }
 
     public void deleteDiscussion(long id) {

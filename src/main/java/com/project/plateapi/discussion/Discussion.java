@@ -36,6 +36,9 @@ public class Discussion {
     @Column(name = "TITLE", columnDefinition = "VARCHAR(20)", nullable = false)
     private String title;
 
+    @Column(name="CONTENT",columnDefinition = "TEXT")
+    private  String content;
+
     @Column(name = "CLOSED")
     private boolean closed;
 
@@ -43,14 +46,15 @@ public class Discussion {
     @CreatedDate
     private String createdDate;
 
-    @Column(name = "MODIFIED_DATE")
+    @Column(name = "CLOSED_DATE")
     @LastModifiedDate
     private String closedDate;
 
     @OneToMany(mappedBy = "discussion")
     private List<Comment> comments = new ArrayList<>();
 
-    public void changeTitle(Discussion discussion) {
+    public void edit(Discussion discussion) {
         this.title = discussion.getTitle();
+        this.content = discussion.getContent();
     }
 }
