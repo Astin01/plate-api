@@ -22,7 +22,7 @@ public class UserRequestDto {
     private String deletedDate = null;
 
     public Users toEntity() {
-        Users user = Users.builder()
+        return Users.builder()
                 .userId(userId)
                 .userPassword(userPassword)
                 .name(name)
@@ -31,6 +31,5 @@ public class UserRequestDto {
                 .createdDate(createdDate)
                 .deletedDate(deletedDate)
                 .build();
-        return user;
     }
 }

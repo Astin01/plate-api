@@ -17,13 +17,12 @@ public class DiscussionRequestDto {
     private final String createdDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
     public Discussion toEntity() {
-        Discussion discussion = Discussion.builder()
+        return Discussion.builder()
                 .title(title)
                 .content(content)
                 .closed(closed)
                 .createdDate(createdDate)
                 .build();
-        return discussion;
     }
 
 }
