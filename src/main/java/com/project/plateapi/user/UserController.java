@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/api/users/{id}")
-    public Users retrieveUser(@PathVariable Long id) {
+    public ResponseEntity<?> retrieveUser(@PathVariable Long id) {
         return service.findById(id);
     }
 
@@ -69,16 +69,8 @@ public class UserController {
 
     @Secured("USER")
     @PutMapping("/api/users")
-    public void updateUser(@RequestBody UserRequestDto dto) {
-        service.updateUser(dto);
-    }
-
-    @GetMapping("/api/users/{id}/comments")
-    public List<Comment> retrieveCommentsForUser(@PathVariable Long id) {
-        Users user = service.findById(id);
-
-        return user.getComments();
-
+    public ResponseEntity<?> updateUser(@RequestBody UserRequestDto dto) {
+        return service.updateUser(dto);
     }
 
 }

@@ -33,7 +33,7 @@ public class UserService {
 
 
     @Transactional
-    public void updateUser(UserRequestDto dto) {
+    public ResponseEntity<?> updateUser(UserRequestDto dto) {
         Users user = userRepository.findByUserId(dto.getUserId());
 
         String userPassword = dto.getUserPassword();
@@ -45,11 +45,15 @@ public class UserService {
         user.setEmail(dto.getEmail());
 
         user.update(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public Users findById(Long id) {
-        return userRepository.findById(id)
+    public ResponseEntity<?> findById(Long id) {
+        Users user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("no such id exist"));
+
+        return new ResponseEntity<>(user,HttpStatus.OK);
     }
 
     @Transactional
