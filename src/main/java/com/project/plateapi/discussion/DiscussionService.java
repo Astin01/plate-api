@@ -1,15 +1,11 @@
 package com.project.plateapi.discussion;
 
-import com.project.plateapi.comment.Comment;
-import com.project.plateapi.comment.CommentRepository;
-import com.project.plateapi.comment.dto.CommentRequestDto;
 import com.project.plateapi.discussion.dto.DiscussionEditRequestDto;
-import com.project.plateapi.discussion.dto.DiscussionRequestDto;
-import com.project.plateapi.user.UserRepository;
-import com.project.plateapi.user.Users;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,28 +14,39 @@ public class DiscussionService {
     private final DiscussionRepository discussionRepository;
 
     @Transactional
-    public void createDiscussion(Discussion discussion) {
+    public ResponseEntity<?> createDiscussion(Discussion discussion) {
           discussionRepository.save(discussion);
+
+          return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional
-    public void editDiscussion(Long id, DiscussionEditRequestDto dto) {
+    public ResponseEntity<?> editDiscussion(Long id, DiscussionEditRequestDto dto) {
         Discussion discussion = discussionRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         discussion.setTitle(dto.getTitle());
         discussion.setContent(dto.getContent());
 
         discussion.edit(discussion);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public void deleteDiscussion(long id) {
+    public ResponseEntity<?> deleteDiscussion(long id) {
         discussionRepository.deleteById(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public List<Discussion> getAllDiscussion(boolean closed) {
-        return discussionRepository.findAllByClosed(closed);
+    public ResponseEntity<?> getAllDiscussion(boolean closed) {
+        List<Discussion> discussionList = discussionRepository.findAllByClosed(closed);
+
+        return new ResponseEntity<>(discussionList, HttpStatus.OK);
+
     }
 
-    public Discussion getDiscussion(long id) {
-        return discussionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(""));
+    public ResponseEntity<?> getDiscussion(long id) {
+        Discussion discussion = discussionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(""));
+
+        return new ResponseEntity<>(discussion,HttpStatus.OK);
     }
 }

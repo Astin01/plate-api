@@ -1,11 +1,10 @@
 package com.project.plateapi.discussion;
 
-import com.project.plateapi.comment.CommentService;
-import com.project.plateapi.comment.dto.CommentRequestDto;
 import com.project.plateapi.discussion.dto.DiscussionEditRequestDto;
 import com.project.plateapi.discussion.dto.DiscussionRequestDto;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,29 +22,29 @@ public class DiscussionController {
     }
 
     @GetMapping("/api/discussion")
-    public List<Discussion> getAllDiscussion(){
+    public ResponseEntity<?> getAllDiscussion(){
         boolean isClosed = false;
         return service.getAllDiscussion(isClosed);
     }
 
     @PostMapping("/api/discussion")
-    public void createDiscussion(@Valid @RequestBody DiscussionRequestDto dto) {
+    public ResponseEntity<?> createDiscussion(@Valid @RequestBody DiscussionRequestDto dto) {
         Discussion discussion = dto.toEntity();
-        service.createDiscussion(discussion);
+        return service.createDiscussion(discussion);
     }
 
     @GetMapping("/api/discussion/{id}")
-    public Discussion getDiscussion(@PathVariable long id){
+    public ResponseEntity<?> getDiscussion(@PathVariable long id){
         return service.getDiscussion(id);
     }
 
     @PutMapping("/api/discussion/{id}")
-    public void updateDiscussionTitle(@PathVariable long id, @RequestBody DiscussionEditRequestDto dto) {
-        service.editDiscussion(id, dto);
+    public ResponseEntity<?> updateDiscussionTitle(@PathVariable long id, @RequestBody DiscussionEditRequestDto dto) {
+        return service.editDiscussion(id, dto);
     }
 
     @DeleteMapping("/api/discussion/{id}")
-    public void closeDiscussion(@PathVariable long id) {
-        service.deleteDiscussion(id);
+    public ResponseEntity<?> closeDiscussion(@PathVariable long id) {
+        return service.deleteDiscussion(id);
     }
 }
