@@ -1,7 +1,11 @@
 package com.project.plateapi.comment;
 
-import com.project.plateapi.comment.dto.CommentRequestDto;
+import com.project.plateapi.comment.dto.CommentCreateDto;
+import com.project.plateapi.comment.dto.CommentUpdateDto;
+import com.project.plateapi.security.custom.dto.CustomUser;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,26 +15,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CommentController {
-    private CommentService service;
+    private final CommentService service;
 
     public CommentController(CommentService service) {
         this.service = service;
     }
 
-    @PostMapping("/api/comment/{id}")
-    public void createComment(String nickname, @PathVariable long id, @Valid @RequestBody CommentRequestDto dto) {
-        nickname = "ace";
-        service.createComment(nickname, id, dto);
+    @PostMapping("/api/comment/{discussion_id}")
+    public ResponseEntity<?> createComment(@AuthenticationPrincipal CustomUser customUser, @PathVariable long discussion_id, @Valid @RequestBody CommentCreateDto createDto) {
+        return service.createComment(customUser, discussion_id, createDto);
     }
 
-    @PutMapping("/api/comment/{id}")
-    public void updateComment(@PathVariable long id, @RequestBody CommentRequestDto dto) {
-        service.updateComment(id, dto);
+    @PutMapping("/api/comment/{comment_id}")
+    public ResponseEntity<?> updateComment(@PathVariable long comment_id, @RequestBody CommentUpdateDto updateDto) {
+        return service.updateComment(comment_id, updateDto);
     }
 
-    @DeleteMapping("/api/comment/{id}")
-    public void deleteComment(@PathVariable long id) {
-        service.deleteComment(id);
+    @DeleteMapping("/api/comment/{comment_id}")
+    public ResponseEntity<?> deleteComment(@PathVariable long comment_id) {
+        return service.deleteComment(comment_id);
     }
 
 }
