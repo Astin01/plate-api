@@ -1,9 +1,9 @@
 package com.project.plateapi.restaurant;
 
-import com.project.plateapi.comment.Comment;
-import com.project.plateapi.restaurant.dto.RestaurantUpdateRequestDto;
+import com.project.plateapi.restaurant.dto.RestaurantUpdateDto;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,32 +21,37 @@ public class RestaurantController {
     }
 
     @GetMapping("/api/restaurants")
-    public List<Restaurant> retrieveRestaurants() {
+    public ResponseEntity<?> findAllRestaurants() {
         return service.findAllRestaurants();
     }
 
     @PostMapping("/api/restaurants")
-    public void createRestaurant(@Valid @RequestBody Restaurant restaurant) {
-        service.createRestaurant(restaurant);
+    public ResponseEntity<Long> createRestaurant(@Valid @RequestBody Restaurant restaurant) {
+        return service.createRestaurant(restaurant);
     }
 
     @GetMapping("/api/restaurants/category/{category}")
-    public List<Restaurant> retrieveRestaurants(@PathVariable String category) {
+    public ResponseEntity<?> findAllRestaurantsByCategory(@PathVariable String category) {
         return service.findAllRestaurantsByCategory(category);
     }
 
     @GetMapping("/api/restaurants/name/{name}")
-    public Restaurant retrieveRestaurant(@PathVariable String name) {
+    public ResponseEntity<?> findRestaurant(@PathVariable String name) {
         return service.findRestaurantName(name);
     }
 
+    @GetMapping("/api/restaurants/id/{id}")
+    public ResponseEntity<?> findRestaurantById(@PathVariable Long id) {
+        return service.findRestaurantById(id);
+    }
+
     @PutMapping("/api/restaurants/id/{id}")
-    public void updateRestaurant(@PathVariable Long id, @RequestBody RestaurantUpdateRequestDto dto) {
-        service.update(id, dto);
+    public ResponseEntity<?> changeRestaurantInfo(@PathVariable Long id, @Valid @RequestBody RestaurantUpdateDto updateDto){
+        return service.changeRestaurantInfo(id,updateDto);
     }
 
     @DeleteMapping("/api/restaurants/id/{id}")
-    public void deleteRestaurant(@PathVariable Long id) {
-        service.deleteRestaurant(id);
+    public ResponseEntity<?> deleteRestaurant(@PathVariable Long id) {
+        return service.deleteRestaurant(id);
     }
 }
