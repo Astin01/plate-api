@@ -33,7 +33,7 @@ public class CustomUser implements UserDetails {
         Collection<SimpleGrantedAuthority> roleList = userRoles.stream()
                 .map((auth) -> new SimpleGrantedAuthority(auth.getRole().getRole()))
                 .collect(Collectors.toList());
-        log.info("GrantedAuthorities"+roleList);
+
         return roleList;
     }
 

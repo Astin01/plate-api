@@ -48,7 +48,6 @@ public class Notice {
     @LastModifiedDate
     private String closedDate;
 
-
     public void update(Notice notice) {
         this.title = notice.getTitle();
         this.content = notice.getContent();
