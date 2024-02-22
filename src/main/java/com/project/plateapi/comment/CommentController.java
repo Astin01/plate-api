@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,6 +20,11 @@ public class CommentController {
 
     public CommentController(CommentService service) {
         this.service = service;
+    }
+
+    @GetMapping("/api/comment/{discussion_id}")
+    public ResponseEntity<?> getComment(@PathVariable long discussion_id) {
+        return service.getComment(discussion_id);
     }
 
     @PostMapping("/api/comment/{discussion_id}")
