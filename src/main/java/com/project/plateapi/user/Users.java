@@ -14,6 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,22 +40,29 @@ public class Users {
     @Column(name = "ID")
     private Long id;
 
+    @NotNull
+    @Size(min = 4 ,max=10, message = "Id should have at least 4 characters")
     @Column(name = "USER_ID")
     private String userId;
 
+    @NotNull
+    @Size(min = 2, message = "Password should have at least 2 characters")
     @Column(name = "USER_PASSWORD")
     private String userPassword;
 
-    @Column(name = "USER_PASSWORD_CHECK")
-    private String userPasswordCheck;
-
+    @NotNull
     @Size(min = 2, message = "Name should have at least 2 characters")
     @Column(name = "USER_NAME")
     private String name;
 
+    @NotNull
+    @Size(min = 2, message = "NickName should have at least 2 characters")
     @Column(name = "USER_NICKNAME")
     private String nickname;
 
+    @NotNull
+    @Email
+    @Size(min = 2, message = "Email should have at least 2 characters")
     @Column(name = "USER_EMAIL")
     private String email;
 
@@ -70,9 +79,6 @@ public class Users {
 
     @Column(name = "ENABLED")
     private boolean enabled = Boolean.TRUE;
-
-    @OneToMany(mappedBy = "user")
-    private List<Comment> comments = new ArrayList<>();
 
     public void update(Users user) {
         this.name = user.getName();
