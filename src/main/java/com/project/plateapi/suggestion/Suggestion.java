@@ -2,8 +2,10 @@ package com.project.plateapi.suggestion;
 
 import com.project.plateapi.comment.Comment;
 import com.project.plateapi.restaurant.Restaurant;
+import com.project.plateapi.user.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -48,7 +50,11 @@ public class Suggestion {
     @LastModifiedDate
     private String closedDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="USER_ID")
+    private Users user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="RESTAURANT_ID")
     private Restaurant restaurant;
 

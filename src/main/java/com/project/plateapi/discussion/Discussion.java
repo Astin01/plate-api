@@ -1,14 +1,17 @@
 package com.project.plateapi.discussion;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.plateapi.comment.Comment;
 import com.project.plateapi.user.Users;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import java.util.ArrayList;
@@ -50,7 +53,11 @@ public class Discussion {
     @LastModifiedDate
     private String closedDate;
 
-    @OneToMany(mappedBy = "discussion")
+    @ManyToOne
+    @JoinColumn(name="USER_ID")
+    private Users user;
+
+    @OneToMany(mappedBy = "discussion",fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
     public void edit(Discussion discussion) {
