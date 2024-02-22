@@ -1,6 +1,10 @@
 package com.project.plateapi.user.dto;
 
 import com.project.plateapi.user.Users;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
@@ -13,12 +17,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UserRequestDto {
+    @NotBlank
     private String userId;
+
+    @NotBlank
     private String userPassword;
+
+    @Email
     private String email;
+
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String nickname;
-    private String createdDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+    private final String createdDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
     private String deletedDate = null;
 
     public Users toEntity() {
