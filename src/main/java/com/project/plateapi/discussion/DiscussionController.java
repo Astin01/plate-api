@@ -1,11 +1,12 @@
 package com.project.plateapi.discussion;
 
-import com.project.plateapi.discussion.dto.DiscussionEditRequestDto;
-import com.project.plateapi.discussion.dto.DiscussionRequestDto;
+import com.project.plateapi.discussion.dto.DiscussionEditDto;
+import com.project.plateapi.discussion.dto.DiscussionCreateDto;
+import com.project.plateapi.security.custom.dto.CustomUser;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,10 +28,11 @@ public class DiscussionController {
         return service.getAllDiscussion(isClosed);
     }
 
+    @Secured("USER")
     @PostMapping("/api/discussion")
-    public ResponseEntity<?> createDiscussion(@Valid @RequestBody DiscussionRequestDto dto) {
-        Discussion discussion = dto.toEntity();
-        return service.createDiscussion(discussion);
+    public ResponseEntity<?> createDiscussion(@AuthenticationPrincipal CustomUser customUser, @Valid @RequestBody DiscussionCreateDto createDto) {
+        Discussion discussion = createDto.toEntity();
+        return service.createDiscussion(customUser, discussion);
     }
 
     @GetMapping("/api/discussion/{id}")
@@ -38,13 +40,15 @@ public class DiscussionController {
         return service.getDiscussion(id);
     }
 
+    @Secured("USER")
     @PutMapping("/api/discussion/{id}")
-    public ResponseEntity<?> updateDiscussionTitle(@PathVariable long id, @RequestBody DiscussionEditRequestDto dto) {
-        return service.editDiscussion(id, dto);
+    public ResponseEntity<?> updateDiscussionTitle(@AuthenticationPrincipal CustomUser customUser,@PathVariable long id, @RequestBody DiscussionEditDto editDto) {
+        return service.editDiscussion(customUser,id, editDto);
     }
 
-    @DeleteMapping("/api/discussion/{id}")
-    public ResponseEntity<?> closeDiscussion(@PathVariable long id) {
-        return service.deleteDiscussion(id);
+    @Secured("USER")
+    @PostMapping("/api/discussion/{id}")
+    public ResponseEntity<?> closeDiscussion(@AuthenticationPrincipal CustomUser customUser,@PathVariable long id) {
+        return service.deleteDiscussion(customUser,id);
     }
 }
