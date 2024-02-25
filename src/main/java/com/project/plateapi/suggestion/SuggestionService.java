@@ -2,8 +2,12 @@ package com.project.plateapi.suggestion;
 
 import com.project.plateapi.restaurant.Restaurant;
 import com.project.plateapi.restaurant.RestaurantRepository;
+import com.project.plateapi.security.custom.dto.CustomUser;
 import com.project.plateapi.suggestion.dto.SuggestionCreateDto;
+import com.project.plateapi.suggestion.dto.SuggestionListResponseDto;
+import com.project.plateapi.suggestion.dto.SuggestionResponseDto;
 import com.project.plateapi.suggestion.dto.SuggestionUpdateDto;
+import com.project.plateapi.user.Users;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,38 +24,59 @@ public class SuggestionService {
     public ResponseEntity<?> findSuggestion(Long suggestionId) {
          Suggestion suggestion = suggestionRepository.findById(suggestionId)
                  .orElseThrow(IllegalArgumentException::new);
-         return new ResponseEntity<>(suggestion,HttpStatus.OK);
+
+        SuggestionResponseDto responseDto = new SuggestionResponseDto(suggestion);
+
+         return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
     public ResponseEntity<?> findAllSuggestion() {
         List<Suggestion> suggestionList = suggestionRepository.findAll();
 
-        return new ResponseEntity<>(suggestionList,HttpStatus.OK);
+        SuggestionListResponseDto responseDto = new SuggestionListResponseDto(suggestionList);
+
+        return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
-    public ResponseEntity<Long> createSuggestion(Long id ,SuggestionCreateDto createDto) {
+    @Transactional
+    public ResponseEntity<Long> createSuggestion(CustomUser customUser, Long id , SuggestionCreateDto createDto) {
         Suggestion suggestion = createDto.toEntity();
+        Users user = customUser.getUser();
         Restaurant restaurant = restaurantRepository.findById(id)
                         .orElseThrow(IllegalArgumentException::new);
+
         suggestion.setRestaurant(restaurant);
+        suggestion.setUser(user);
         suggestionRepository.save(suggestion);
+
         return new ResponseEntity<>(suggestion.getId(), HttpStatus.OK);
     }
+    @Transactional
+    public ResponseEntity<?> editSuggestion(CustomUser customUser, Long suggestion_id, SuggestionUpdateDto suggestionUpdateDto) {
+        Suggestion suggestion = suggestionRepository.findById(suggestion_id)
+                .orElseThrow(IllegalArgumentException::new);
 
-    public ResponseEntity<?> deleteSuggestion(Long id) {
-        suggestionRepository.deleteById(id);
+        if(notUser(customUser, suggestion)){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        suggestion.setTitle(suggestionUpdateDto.getTitle());
+        suggestion.setContent(suggestionUpdateDto.getContent());
+        suggestion.update(suggestion);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<?> editSuggestion(Long id, SuggestionUpdateDto suggestionUpdateDto) {
-        Suggestion suggestion = suggestionRepository.findById(id)
+    public ResponseEntity<?> deleteSuggestion(CustomUser customUser,Long suggestion_id) {
+        Suggestion suggestion = suggestionRepository.findById(suggestion_id)
                 .orElseThrow(IllegalArgumentException::new);
 
-        suggestion.setTitle(suggestionUpdateDto.getTitle());
-        suggestion.setContent(suggestionUpdateDto.getContent());
+        if(notUser(customUser, suggestion)){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-        suggestion.update(suggestion);
+       suggestionRepository.deleteById(suggestion_id);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -72,4 +97,12 @@ public class SuggestionService {
 
         return new ResponseEntity<>(restaurant.getId(),HttpStatus.OK);
     }
+
+    private boolean notUser(CustomUser customUser,Suggestion suggestion){
+        String userId = customUser.getUsername();
+        String suggestionUserId = suggestion.getUser().getUserId();
+
+        return !userId.equals(suggestionUserId);
+    }
+
 }
