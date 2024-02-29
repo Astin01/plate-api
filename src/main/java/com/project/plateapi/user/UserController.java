@@ -47,13 +47,13 @@ public class UserController {
         return service.findById(id);
     }
 
-    @Secured("USER")
+    @Secured({"USER","ADMIN"})
     @GetMapping("/api/users/info")
     public ResponseEntity<?> retrieveUserInfo(@AuthenticationPrincipal CustomUser customUser) {
         return service.retrieveUserInfo(customUser);
     }
 
-    @Secured("USER")
+    @Secured({"USER","ADMIN"})
     @DeleteMapping("/api/users/{id}")
     public ResponseEntity<?> deleteUser(@AuthenticationPrincipal CustomUser customUser,@PathVariable String id) {
         boolean result = service.deleteUser(customUser,id);
@@ -67,7 +67,7 @@ public class UserController {
         }
     }
 
-    @Secured("USER")
+    @Secured({"USER","ADMIN"})
     @PutMapping("/api/users")
     public ResponseEntity<?> updateUser(@RequestBody UserRequestDto dto) {
         return service.updateUser(dto);

@@ -30,7 +30,7 @@ public class SuggestionController {
         return suggestionService.findAllSuggestion();
     }
 
-    @Secured("USER")
+    @Secured({"USER","ADMIN"})
     @PostMapping("/api/suggestion/{restaurant_id}")
     public ResponseEntity<Long> createSuggestion(@AuthenticationPrincipal CustomUser customUser,@PathVariable Long restaurant_id , @Valid @RequestBody SuggestionCreateDto createDto) {
         return suggestionService.createSuggestion(customUser,restaurant_id, createDto);
@@ -41,13 +41,13 @@ public class SuggestionController {
         return suggestionService.findSuggestion(suggestion_id);
     }
 
-    @Secured("USER")
+    @Secured({"USER","ADMIN"})
     @PutMapping("/api/suggestion/{suggestion_id}")
     public ResponseEntity<?> editSuggestion(@AuthenticationPrincipal CustomUser customUser,@PathVariable Long suggestion_id, @RequestBody SuggestionUpdateDto suggestionUpdateDto) {
         return suggestionService.editSuggestion(customUser,suggestion_id, suggestionUpdateDto);
     }
 
-    @Secured("USER")
+    @Secured({"USER","ADMIN"})
     @DeleteMapping("/api/suggestion/delete/{suggestion_id}")
     public ResponseEntity<?> deleteSuggestion(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long suggestion_id) {
         return suggestionService.deleteSuggestion(customUser,suggestion_id);
