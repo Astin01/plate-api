@@ -1,15 +1,18 @@
 package com.project.plateapi.discussion;
 
+import com.project.plateapi.comment.Comment;
 import com.project.plateapi.discussion.dto.DiscussionEditDto;
 import com.project.plateapi.discussion.dto.DiscussionListResponseDto;
 import com.project.plateapi.discussion.dto.DiscussionResponseDto;
 import com.project.plateapi.security.custom.dto.CustomUser;
 import com.project.plateapi.user.Users;
 import jakarta.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -51,7 +54,7 @@ public class DiscussionService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        discussionRepository.findById(id);
+        discussionRepository.deleteById(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
