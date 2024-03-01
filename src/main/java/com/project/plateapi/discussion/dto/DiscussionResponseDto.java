@@ -25,6 +25,7 @@ public class DiscussionResponseDto {
     private String title;
     private String content;
     private boolean closed;
+    private UserIdDto userId;
     private CommentDto comments;
 
     public DiscussionResponseDto(Discussion discussion){
@@ -32,7 +33,16 @@ public class DiscussionResponseDto {
         this.title = discussion.getTitle();
         this.content = discussion.getContent();
         this.closed = discussion.isClosed();
+        this.userId = new UserIdDto(discussion.getUser());
         this.comments = new CommentDto(discussion.getComments());
+    }
+
+    @Getter
+    public static class UserIdDto{
+        private final String userId;
+        public UserIdDto(Users user){
+            this.userId = user.getUserId();
+        }
     }
     @Getter
     public static class CommentDto {
