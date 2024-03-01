@@ -41,6 +41,7 @@ public class NoticeService {
 
     public ResponseEntity<?> deleteNotice(Long id) {
         noticeRepository.deleteById(id);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -8,11 +8,14 @@ import com.project.plateapi.suggestion.dto.SuggestionListResponseDto;
 import com.project.plateapi.suggestion.dto.SuggestionResponseDto;
 import com.project.plateapi.suggestion.dto.SuggestionUpdateDto;
 import com.project.plateapi.user.Users;
+import com.project.plateapi.user_role.UserRole;
 import jakarta.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -72,7 +75,13 @@ public class SuggestionService {
         Suggestion suggestion = suggestionRepository.findById(suggestion_id)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if(notUser(customUser, suggestion)){
+        if(notAdmin(customUser)){
+            suggestionRepository.deleteById(suggestion_id);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        if(notUser(customUser, suggestion)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -103,6 +112,14 @@ public class SuggestionService {
         String suggestionUserId = suggestion.getUser().getUserId();
 
         return !userId.equals(suggestionUserId);
+    }
+
+    private boolean notAdmin(CustomUser customUser){
+        Collection<? extends GrantedAuthority> auth = customUser.getAuthorities();
+        for(GrantedAuthority auths : auth){
+            return auths.getAuthority().equals("ADMIN");
+        }
+        return false;
     }
 
 }
