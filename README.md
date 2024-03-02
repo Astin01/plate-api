@@ -1,18 +1,11 @@
 # Plate-api
 
-## 요구사항
-- [x] 추천 맛집
-  - [x] 맛집 생성
-  - [x] 맛집 불러오기
-  - [x] 맛집 수정
-  - [x] 맛집 삭제
-- [ ] 댓글 기능
-  - [ ] 댓글 생성
-  - [ ] 댓글 불러오기
-  - [ ] 댓글 수정
-  - [ ] 댓글 삭제
-- [ ] 유저 관리
-  - [ ] 유저 생성
-  - [ ] 유저 조회
-  - [ ] 유저 업데이트
-  - [ ] 유저 삭제
+## 백엔드
+Language: Java 17
+
+Framework: Spring Boot / Spring MVC
+
+Data: Spring Data JPA / MySQL / JWT
+
+## ERD
+<img width="100%" alt="image" src="https://github.com/Astin01/plate-web/assets/60924984/fb87a97e-bdb3-4d16-8883-973fdf7b564a">
