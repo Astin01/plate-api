@@ -30,16 +30,13 @@ public class UserController {
     @PostMapping("/api/users")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDto dto) {
         Users user = dto.toEntity();
-        log.info("User"+user);
-        log.info("dto"+dto);
-        boolean result = service.createUser(user);
-        if(result){
-            log.info("회원가입 성공");
-            return new ResponseEntity<>("Success", HttpStatus.OK);
-        } else{
-            log.info("회원가입 실패");
+        try{
+            service.createUser(user);
+        }catch (IllegalArgumentException e){
             return new ResponseEntity<>("Failure", HttpStatus.BAD_REQUEST);
         }
+            return new ResponseEntity<>("Success", HttpStatus.OK);
+
     }
 
     @GetMapping("/api/users/{id}")

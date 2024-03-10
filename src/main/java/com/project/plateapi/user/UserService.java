@@ -57,7 +57,28 @@ public class UserService {
     }
 
     @Transactional
-    public boolean createUser(Users user) {
+    public void createUser(Users user) {
+        try{
+            checkUser(user);
+            saveUser(user);
+        } catch (IllegalArgumentException e){
+            throw new IllegalArgumentException();
+        }
+    }
+    private void checkUser(Users user){
+        String nickname = user.getNickname();
+        String email = user.getEmail();
+
+        if(userRepository.findByNickname(nickname) != null){
+            throw new IllegalArgumentException("Nickname already exists");
+        }
+        if(userRepository.findByEmail(email) != null){
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+    }
+
+    private void saveUser(Users user){
         String encodedPassword = passwordEncoder.encode(user.getUserPassword());
         user.setUserPassword(encodedPassword);
         user.setEnabled(true);
@@ -71,10 +92,7 @@ public class UserService {
         em.persist(userRole);
 
         em.flush();
-
-        return true;
     }
-
     @Transactional
     public boolean deleteUser(CustomUser customUser,String userId) {
             Users user = customUser.getUser();
@@ -86,7 +104,7 @@ public class UserService {
                 return false;
             }
 
-    };
+    }
 
     public void login(Users user, HttpServletRequest request) throws Exception {
         String userId = user.getUserId();
