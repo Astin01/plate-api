@@ -43,8 +43,7 @@ public class UserControllerTest {
     @DisplayName("회원가입 성공")
     @Test
     void signUpSuccess() throws Exception {
-        UserRequestDto requestDto = userRequestDto();
-        Mockito.doReturn(true).when(userService).createUser(ArgumentMatchers.any(Users.class));
+        Mockito.doNothing().when(userService).createUser(ArgumentMatchers.any(Users.class));
 
         ResultActions actions = mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/users")
