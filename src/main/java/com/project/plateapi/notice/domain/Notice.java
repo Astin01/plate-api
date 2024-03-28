@@ -1,15 +1,10 @@
-package com.project.plateapi.suggestion;
+package com.project.plateapi.notice.domain;
 
-import com.project.plateapi.restaurant.domain.Restaurant;
-import com.project.plateapi.user.domain.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +18,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Suggestion {
+public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -36,6 +31,9 @@ public class Suggestion {
     @Column(name="CONTENT",columnDefinition = "TEXT")
     private  String content;
 
+    @Column(name="IMAGE")
+    private String imageUrl;
+
     @Column(name="CLOSED")
     private boolean closed;
 
@@ -47,16 +45,9 @@ public class Suggestion {
     @LastModifiedDate
     private String closedDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="USER_ID")
-    private Users user;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="RESTAURANT_ID")
-    private Restaurant restaurant;
-
-    public void update(Suggestion suggestion) {
-        this.title = suggestion.getTitle();
-        this.content = suggestion.getContent();
+    public void update(Notice notice) {
+        this.title = notice.getTitle();
+        this.content = notice.getContent();
+        this.imageUrl = notice.getImageUrl();
     }
 }

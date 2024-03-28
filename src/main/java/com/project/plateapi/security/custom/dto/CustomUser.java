@@ -1,9 +1,8 @@
 package com.project.plateapi.security.custom.dto;
 
-import com.project.plateapi.user.Users;
-import com.project.plateapi.user_role.UserRole;
+import com.project.plateapi.user.domain.Users;
+import com.project.plateapi.user_role.domain.UserRole;
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

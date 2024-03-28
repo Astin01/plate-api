@@ -1,10 +1,8 @@
 package com.project.plateapi.user.dto;
 
-import com.project.plateapi.user.Users;
+import com.project.plateapi.user.domain.Users;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;

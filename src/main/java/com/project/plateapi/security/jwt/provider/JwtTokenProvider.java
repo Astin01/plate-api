@@ -2,12 +2,12 @@ package com.project.plateapi.security.jwt.provider;
 
 import com.project.plateapi.security.jwt.constants.SecurityConstants;
 import com.project.plateapi.security.jwt.props.JwtProps;
-import com.project.plateapi.role.Role;
+import com.project.plateapi.role.domain.Role;
 import com.project.plateapi.security.custom.dto.CustomUser;
 import com.project.plateapi.security.jwt.constants.JwtConstants;
-import com.project.plateapi.user.UserRepository;
-import com.project.plateapi.user.Users;
-import com.project.plateapi.user_role.UserRole;
+import com.project.plateapi.user.domain.UserRepository;
+import com.project.plateapi.user.domain.Users;
+import com.project.plateapi.user_role.domain.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;

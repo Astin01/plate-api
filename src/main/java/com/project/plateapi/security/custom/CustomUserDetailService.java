@@ -1,12 +1,9 @@
 package com.project.plateapi.security.custom;
 
 import com.project.plateapi.security.custom.dto.CustomUser;
-import com.project.plateapi.user.UserRepository;
-import com.project.plateapi.user.Users;
-import jakarta.transaction.Transactional;
-import javax.sql.DataSource;
+import com.project.plateapi.user.domain.UserRepository;
+import com.project.plateapi.user.domain.Users;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

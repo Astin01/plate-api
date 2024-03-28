@@ -18,6 +18,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+application.properties
 .idea
 *.iws
 *.iml
@@ -37,4 +38,5 @@ out/
 .vscode/
 
 ### ignore properties file
-src/main/java/com/project/plateapi/config/config.propertites
+src/main/resources/application.properties
+

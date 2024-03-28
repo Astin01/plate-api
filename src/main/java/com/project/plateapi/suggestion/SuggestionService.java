@@ -1,14 +1,13 @@
 package com.project.plateapi.suggestion;
 
-import com.project.plateapi.restaurant.Restaurant;
-import com.project.plateapi.restaurant.RestaurantRepository;
+import com.project.plateapi.restaurant.domain.Restaurant;
+import com.project.plateapi.restaurant.domain.RestaurantRepository;
 import com.project.plateapi.security.custom.dto.CustomUser;
 import com.project.plateapi.suggestion.dto.SuggestionCreateDto;
 import com.project.plateapi.suggestion.dto.SuggestionListResponseDto;
 import com.project.plateapi.suggestion.dto.SuggestionResponseDto;
 import com.project.plateapi.suggestion.dto.SuggestionUpdateDto;
-import com.project.plateapi.user.Users;
-import com.project.plateapi.user_role.UserRole;
+import com.project.plateapi.user.domain.Users;
 import jakarta.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;

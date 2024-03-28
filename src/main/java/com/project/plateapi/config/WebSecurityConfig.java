@@ -60,6 +60,7 @@ public class WebSecurityConfig {
                 authorizeRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() //정적 자원 인가
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/api/users").permitAll()
                         .requestMatchers("/api/restaurants/**").permitAll()

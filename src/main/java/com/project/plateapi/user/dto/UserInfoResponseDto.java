@@ -1,8 +1,8 @@
 package com.project.plateapi.user.dto;
 
-import com.project.plateapi.role.Role;
-import com.project.plateapi.user.Users;
-import com.project.plateapi.user_role.UserRole;
+import com.project.plateapi.role.domain.Role;
+import com.project.plateapi.user.domain.Users;
+import com.project.plateapi.user_role.domain.UserRole;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
