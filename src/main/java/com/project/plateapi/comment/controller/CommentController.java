@@ -6,6 +6,7 @@ import com.project.plateapi.comment.controller.dto.request.CommentUpdateDto;
 import com.project.plateapi.comment.service.dto.response.CommentResponseDto;
 import com.project.plateapi.security.custom.dto.CustomUser;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,13 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/comment")
+@RequiredArgsConstructor
 @RestController
 public class CommentController {
     private final CommentService service;
-
-    public CommentController(CommentService service) {
-        this.service = service;
-    }
 
     @GetMapping("/{discussion_id}")
     public ResponseEntity<CommentResponseDto> getComment(@PathVariable long discussion_id) {
