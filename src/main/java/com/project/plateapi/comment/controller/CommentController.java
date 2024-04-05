@@ -1,8 +1,7 @@
 package com.project.plateapi.comment.controller;
 
 import com.project.plateapi.comment.service.CommentService;
-import com.project.plateapi.comment.controller.dto.request.CommentCreateDto;
-import com.project.plateapi.comment.controller.dto.request.CommentUpdateDto;
+import com.project.plateapi.comment.controller.dto.request.CommentDto;
 import com.project.plateapi.comment.service.dto.response.CommentResponseDto;
 import com.project.plateapi.security.custom.dto.CustomUser;
 import jakarta.validation.Valid;
@@ -30,13 +29,13 @@ public class CommentController {
     }
 
     @PostMapping("/{discussion_id}")
-    public ResponseEntity<Void> createComment(@AuthenticationPrincipal CustomUser customUser, @PathVariable long discussion_id, @Valid @RequestBody CommentCreateDto createDto) {
-        return service.createComment(customUser, discussion_id, createDto);
+    public ResponseEntity<Void> createComment(@AuthenticationPrincipal CustomUser customUser, @PathVariable long discussion_id, @Valid @RequestBody CommentDto commentdto) {
+        return service.createComment(customUser, discussion_id, commentdto);
     }
 
     @PutMapping("/{comment_id}")
-    public ResponseEntity<Void> updateComment(@PathVariable long comment_id, @RequestBody CommentUpdateDto updateDto) {
-        return service.updateComment(comment_id, updateDto);
+    public ResponseEntity<Void> updateComment(@PathVariable long comment_id, @RequestBody CommentDto commentdto) {
+        return service.updateComment(comment_id, commentdto);
     }
 
     @DeleteMapping("/{comment_id}")

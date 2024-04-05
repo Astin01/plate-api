@@ -1,7 +1,6 @@
 package com.project.plateapi.comment.service;
 
-import com.project.plateapi.comment.controller.dto.request.CommentCreateDto;
-import com.project.plateapi.comment.controller.dto.request.CommentUpdateDto;
+import com.project.plateapi.comment.controller.dto.request.CommentDto;
 import com.project.plateapi.comment.domain.Comment;
 import com.project.plateapi.comment.domain.CommentRepository;
 import com.project.plateapi.comment.service.dto.response.CommentResponseDto;
@@ -35,26 +34,31 @@ public class CommentService {
     }
 
     @Transactional
-    public ResponseEntity<Void> createComment(CustomUser customUser, Long id, CommentCreateDto createDto) {
-        Users user = customUser.getUser();
-        Discussion discussion = discussionRepository.findById(id)
+    public ResponseEntity<Void> createComment(CustomUser customUser, Long id, CommentDto commentdto) {
+        final Users user = customUser.getUser();
+        final Discussion discussion = discussionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("댓글 쓰기 실패."));
+        final String createdDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
-        createDto.setComment(user,discussion);
+        final Comment comment = Comment.builder()
+                .comment(commentdto.comment())
+                .user(user)
+                .discussion(discussion)
+                .createdDate(createdDate)
+                .build();
 
-        Comment comment = createDto.toEntity();
         commentRepository.save(comment);
 
         return ResponseEntity.ok().build();
     }
 
     @Transactional
-    public ResponseEntity<Void> updateComment(Long id, CommentUpdateDto updateDto) {
+    public ResponseEntity<Void> updateComment(Long id, CommentDto commentdto) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id= " + id));
         String modifiedDate= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
-        comment.update(updateDto.comment(), modifiedDate);
+        comment.update(commentdto.comment(), modifiedDate);
 
         return ResponseEntity.ok().build();
     }
