@@ -20,7 +20,7 @@ public class DiscussionService {
     private final DiscussionRepository discussionRepository;
 
     @Transactional
-    public ResponseEntity<?> createDiscussion(CustomUser customUser, Discussion discussion) {
+    public ResponseEntity<Void> createDiscussion(CustomUser customUser, Discussion discussion) {
         Users user = customUser.getUser();
 
         discussion.setUser(user);
@@ -30,7 +30,7 @@ public class DiscussionService {
     }
 
     @Transactional
-    public ResponseEntity<?> editDiscussion(CustomUser customUser, Long id, DiscussionEditDto dto) {
+    public ResponseEntity<Void> editDiscussion(CustomUser customUser, Long id, DiscussionEditDto dto) {
         Discussion discussion = discussionRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 
         if(notUser(customUser, discussion)){
@@ -46,7 +46,7 @@ public class DiscussionService {
     }
 
     @Transactional
-    public ResponseEntity<?> deleteDiscussion(CustomUser customUser,long id) {
+    public ResponseEntity<Void> deleteDiscussion(CustomUser customUser,long id) {
         Discussion discussion = discussionRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 
         if(notUser(customUser, discussion)){
@@ -58,7 +58,7 @@ public class DiscussionService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getAllDiscussion(boolean closed) {
+    public ResponseEntity<DiscussionListResponseDto> getAllDiscussion(boolean closed) {
         List<Discussion> discussionList = discussionRepository.findAllByClosed(closed);
 
         DiscussionListResponseDto responseDto = new DiscussionListResponseDto(discussionList);
@@ -67,7 +67,7 @@ public class DiscussionService {
 
     }
 
-    public ResponseEntity<?> getDiscussion(long id) {
+    public ResponseEntity<DiscussionResponseDto> getDiscussion(long id) {
         Discussion discussion = discussionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(""));
 
         DiscussionResponseDto responseDto = new DiscussionResponseDto(discussion);
