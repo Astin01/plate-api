@@ -1,49 +1,58 @@
 package com.project.plateapi.notice.service;
 
-import com.project.plateapi.notice.domain.Notice;
-import com.project.plateapi.notice.domain.NoticeRepository;
 import com.project.plateapi.notice.controller.dto.request.NoticeCreateDto;
 import com.project.plateapi.notice.controller.dto.request.NoticeUpdateDto;
-import jakarta.transaction.Transactional;
-import java.util.List;
+import com.project.plateapi.notice.domain.Notice;
+import com.project.plateapi.notice.domain.NoticeRepository;
+import com.project.plateapi.notice.service.dto.response.AllNoticeResponseDto;
+import com.project.plateapi.notice.service.dto.response.NoticeResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class NoticeService {
     private final NoticeRepository noticeRepository;
-    public ResponseEntity<?> findNotice(Long noticeId) {
-         Notice notice = noticeRepository.findById(noticeId)
-                 .orElseThrow(IllegalArgumentException::new);
 
-         return new ResponseEntity<>(notice,HttpStatus.OK);
+    public ResponseEntity<NoticeResponseDto> findNotice(Long noticeId) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        NoticeResponseDto noticeResponse = new NoticeResponseDto(notice);
+
+        return ResponseEntity.ok()
+                .body(noticeResponse);
     }
 
-    public ResponseEntity<?> findAllNotice() {
-        List<Notice> notices = noticeRepository.findAll();
+    public ResponseEntity<AllNoticeResponseDto> findAllNotice() {
+        AllNoticeResponseDto allNoticeResponseDto = new AllNoticeResponseDto(noticeRepository.findAll());
 
-        return new ResponseEntity<>(notices,HttpStatus.OK);
+        return ResponseEntity.ok()
+                .body(allNoticeResponseDto);
     }
 
+    @Transactional
     public ResponseEntity<Long> createNotice(NoticeCreateDto createDto) {
         Notice notice = createDto.toEntity();
 
         noticeRepository.save(notice);
 
-        return new ResponseEntity<>(notice.getId(), HttpStatus.OK);
-    }
-
-    public ResponseEntity<?> deleteNotice(Long id) {
-        noticeRepository.deleteById(id);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok()
+                .body(notice.getId());
     }
 
     @Transactional
-    public ResponseEntity<?> editNotice(Long id, NoticeUpdateDto updateDto) {
+    public ResponseEntity<Void> deleteNotice(Long id) {
+        noticeRepository.deleteById(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Transactional
+    public ResponseEntity<Void> editNotice(Long id, NoticeUpdateDto updateDto) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -53,6 +62,6 @@ public class NoticeService {
 
         notice.update(notice);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.noContent().build();
     }
 }
