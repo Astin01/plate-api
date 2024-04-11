@@ -3,7 +3,8 @@ package com.project.plateapi.restaurant.service;
 import com.project.plateapi.restaurant.domain.Restaurant;
 import com.project.plateapi.restaurant.domain.RestaurantRepository;
 import com.project.plateapi.restaurant.controller.dto.request.RestaurantUpdateDto;
-import jakarta.transaction.Transactional;
+import com.project.plateapi.restaurant.service.dto.response.RestaurantListResponse;
+import com.project.plateapi.restaurant.service.dto.response.RestaurantResponse;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -11,64 +12,75 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
-    public ResponseEntity<?> findAllRestaurants() {
-        List<Restaurant> restaurantList = restaurantRepository.findAll();
+    public ResponseEntity<RestaurantListResponse> findAllRestaurants() {
+        RestaurantListResponse restaurantList = new RestaurantListResponse(restaurantRepository.findAll());
 
-        return new ResponseEntity<>(restaurantList,HttpStatus.OK);
+        return ResponseEntity.ok()
+                .body(restaurantList);
     }
 
-    public ResponseEntity<?> findAllRestaurantsByCategory(String category) {
-        List<Restaurant> restaurantList = restaurantRepository.findAllByCategory(category);
+    public ResponseEntity<RestaurantListResponse> findAllRestaurantsByCategory(String category) {
+        RestaurantListResponse restaurantList = new RestaurantListResponse(restaurantRepository.findAllByCategory(category));
 
-        return new ResponseEntity<>(restaurantList,HttpStatus.OK);
+        return ResponseEntity.ok()
+                .body(restaurantList);
     }
 
-    public ResponseEntity<?> findRestaurantName(String name) {
+    public ResponseEntity<RestaurantResponse> findRestaurantByName(String name) {
         String convertedName = URLDecoder.decode(name, StandardCharsets.UTF_8);
-        Restaurant restaurant = restaurantRepository.findByName(convertedName);
+        RestaurantResponse restaurant = new RestaurantResponse(restaurantRepository.findByName(convertedName));
 
-        return new ResponseEntity<>(restaurant,HttpStatus.OK);
+        return ResponseEntity.ok()
+                .body(restaurant);
     }
 
-    public ResponseEntity<Long> createRestaurant(Restaurant restaurant) {
-        restaurantRepository.save(restaurant);
+    public ResponseEntity<RestaurantResponse> findRestaurantById(Long id) {
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
+        RestaurantResponse response = new RestaurantResponse(restaurant);
 
-        return new ResponseEntity<>(restaurant.getId(), HttpStatus.OK);
-    }
-
-    public ResponseEntity<?> deleteRestaurant(Long id) {
-        restaurantRepository.deleteById(id);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok()
+                .body(response);
     }
 
     @Transactional
-    public ResponseEntity<?> changeRestaurantInfo(Long id, RestaurantUpdateDto updateDto) {
-        Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+    public ResponseEntity<Long> createRestaurant(Restaurant restaurant) {
+        restaurantRepository.save(restaurant);
 
-        restaurant.setName(updateDto.getName());
-        restaurant.setIcon(updateDto.getIcon());
-        restaurant.setCategory(updateDto.getCategory());
-        restaurant.setContent(updateDto.getContent());
-
-        restaurant.update(restaurant);
-
-        return new ResponseEntity<>(HttpStatus.OK);
-
+        return ResponseEntity.ok()
+                .body(restaurant.getId());
     }
 
-    public ResponseEntity<?> findRestaurantById(Long id) {
+    @Transactional
+    public ResponseEntity<Void> deleteRestaurant(Long id) {
+        restaurantRepository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @Transactional
+    public ResponseEntity<Void> changeRestaurantInfo(Long id, RestaurantUpdateDto updateDto) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
 
-        return new ResponseEntity<>(restaurant,HttpStatus.OK);
+        Restaurant updatedRestaurant = Restaurant.builder()
+                .name(updateDto.getName())
+                .icon(updateDto.getIcon())
+                .category(updateDto.getCategory())
+                .content(updateDto.getContent())
+                .build();
+
+        restaurant.update(updatedRestaurant);
+
+        return ResponseEntity.ok().build();
 
     }
 }
