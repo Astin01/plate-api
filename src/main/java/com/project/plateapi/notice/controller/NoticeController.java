@@ -3,8 +3,8 @@ package com.project.plateapi.notice.controller;
 import com.project.plateapi.notice.service.NoticeService;
 import com.project.plateapi.notice.controller.dto.request.NoticeCreateDto;
 import com.project.plateapi.notice.controller.dto.request.NoticeUpdateDto;
-import com.project.plateapi.notice.service.dto.response.AllNoticeResponseDto;
-import com.project.plateapi.notice.service.dto.response.NoticeResponseDto;
+import com.project.plateapi.notice.service.dto.response.NoticeListResponse;
+import com.project.plateapi.notice.service.dto.response.NoticeResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     @GetMapping()
-    public ResponseEntity<AllNoticeResponseDto> findAllNotice() {
+    public ResponseEntity<NoticeListResponse> findAllNotice() {
         return noticeService.findAllNotice();
     }
 
@@ -34,7 +34,7 @@ public class NoticeController {
     }
 
     @GetMapping("/{notice_id}")
-    public ResponseEntity<NoticeResponseDto> findNotice(@PathVariable Long notice_id) {
+    public ResponseEntity<NoticeResponse> findNotice(@PathVariable Long notice_id) {
         return noticeService.findNotice(notice_id);
     }
 

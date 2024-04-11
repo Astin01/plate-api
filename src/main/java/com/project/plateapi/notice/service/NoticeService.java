@@ -4,8 +4,8 @@ import com.project.plateapi.notice.controller.dto.request.NoticeCreateDto;
 import com.project.plateapi.notice.controller.dto.request.NoticeUpdateDto;
 import com.project.plateapi.notice.domain.Notice;
 import com.project.plateapi.notice.domain.NoticeRepository;
-import com.project.plateapi.notice.service.dto.response.AllNoticeResponseDto;
-import com.project.plateapi.notice.service.dto.response.NoticeResponseDto;
+import com.project.plateapi.notice.service.dto.response.NoticeListResponse;
+import com.project.plateapi.notice.service.dto.response.NoticeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,18 +17,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class NoticeService {
     private final NoticeRepository noticeRepository;
 
-    public ResponseEntity<NoticeResponseDto> findNotice(Long noticeId) {
+    public ResponseEntity<NoticeResponse> findNotice(Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        NoticeResponseDto noticeResponse = new NoticeResponseDto(notice);
+        NoticeResponse noticeResponse = new NoticeResponse(notice);
 
         return ResponseEntity.ok()
                 .body(noticeResponse);
     }
 
-    public ResponseEntity<AllNoticeResponseDto> findAllNotice() {
-        AllNoticeResponseDto allNoticeResponseDto = new AllNoticeResponseDto(noticeRepository.findAll());
+    public ResponseEntity<NoticeListResponse> findAllNotice() {
+        NoticeListResponse allNoticeResponseDto = new NoticeListResponse(noticeRepository.findAll());
 
         return ResponseEntity.ok()
                 .body(allNoticeResponseDto);
@@ -48,7 +48,7 @@ public class NoticeService {
     public ResponseEntity<Void> deleteNotice(Long id) {
         noticeRepository.deleteById(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @Transactional
@@ -62,6 +62,6 @@ public class NoticeService {
 
         notice.update(notice);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }
