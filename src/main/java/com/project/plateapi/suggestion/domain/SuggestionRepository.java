@@ -1,4 +1,4 @@
-package com.project.plateapi.suggestion;
+package com.project.plateapi.suggestion.domain;
 
 import java.util.List;
 import java.util.Optional;

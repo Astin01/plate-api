@@ -1,15 +1,13 @@
 package com.project.plateapi.restaurant.service;
 
+import com.project.plateapi.restaurant.controller.dto.request.RestaurantUpdateDto;
 import com.project.plateapi.restaurant.domain.Restaurant;
 import com.project.plateapi.restaurant.domain.RestaurantRepository;
-import com.project.plateapi.restaurant.controller.dto.request.RestaurantUpdateDto;
 import com.project.plateapi.restaurant.service.dto.response.RestaurantListResponse;
 import com.project.plateapi.restaurant.service.dto.response.RestaurantResponse;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

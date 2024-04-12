@@ -1,6 +1,7 @@
-package com.project.plateapi.suggestion;
+package com.project.plateapi.suggestion.domain;
 
 import com.project.plateapi.restaurant.domain.Restaurant;
+import com.project.plateapi.suggestion.controller.dto.request.SuggestionRequest;
 import com.project.plateapi.user.domain.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,8 +56,8 @@ public class Suggestion {
     @JoinColumn(name="RESTAURANT_ID")
     private Restaurant restaurant;
 
-    public void update(Suggestion suggestion) {
-        this.title = suggestion.getTitle();
-        this.content = suggestion.getContent();
+    public void editSuggestion(SuggestionRequest dto){
+        this.title = dto.title();
+        this.content = dto.content();
     }
 }
