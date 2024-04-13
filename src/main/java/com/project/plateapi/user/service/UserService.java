@@ -6,10 +6,11 @@ import com.project.plateapi.user.domain.UserRepository;
 import com.project.plateapi.user.domain.Users;
 import com.project.plateapi.user.dto.UserInfoResponseDto;
 import com.project.plateapi.user.dto.UserRequestDto;
+import com.project.plateapi.user.exception.UserNotFoundException;
 import com.project.plateapi.user_role.domain.UserRole;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
@@ -22,10 +23,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
+
 public class UserService {
 
     private final UserRepository userRepository;
@@ -35,7 +39,7 @@ public class UserService {
 
 
     @Transactional
-    public ResponseEntity<?> updateUser(UserRequestDto dto) {
+    public ResponseEntity<Void> updateUser(UserRequestDto dto) {
         Users user = userRepository.findByUserId(dto.getUserId());
 
         String userPassword = dto.getUserPassword();
@@ -48,15 +52,15 @@ public class UserService {
 
         user.update(user);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @Transactional
-    public ResponseEntity<?> createUser(Users user) {
+    public ResponseEntity<Void> createUser(Users user) {
         checkUser(user);
         saveUser(user);
 
-        return new ResponseEntity<>("Success", HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     private void checkUser(Users user) {
@@ -88,7 +92,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<?> deleteUser(CustomUser customUser, String userId) {
+    public ResponseEntity<Void> deleteUser(CustomUser customUser, String userId) {
         Users user = customUser.getUser();
         String jwtUserId = user.getUserId();
 
@@ -98,8 +102,7 @@ public class UserService {
 
         userRepository.deleteByUserId(userId);
 
-        return new ResponseEntity<>("Successfully deleted", HttpStatus.OK);
-
+        return ResponseEntity.noContent().build();
     }
 
     public void login(Users user, HttpServletRequest request) throws Exception {
