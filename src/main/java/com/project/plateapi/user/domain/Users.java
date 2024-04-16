@@ -1,5 +1,6 @@
 package com.project.plateapi.user.domain;
 
+import com.project.plateapi.user.controller.dto.request.UserInfoRequest;
 import com.project.plateapi.user_role.domain.UserRole;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -75,11 +76,11 @@ public class Users {
     @Column(name = "ENABLED")
     private boolean enabled = Boolean.TRUE;
 
-    public void update(Users user) {
-        this.name = user.getName();
-        this.nickname = user.getNickname();
-        this.email = user.getEmail();
-        this.userPassword = user.getUserPassword();
+    public void updateInfo(UserInfoRequest dto,String pw) {
+        this.name = dto.name();
+        this.nickname = dto.nickname();
+        this.email = dto.email();
+        this.userPassword = pw;
     }
 
 

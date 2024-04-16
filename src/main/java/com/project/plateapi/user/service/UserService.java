@@ -2,19 +2,17 @@ package com.project.plateapi.user.service;
 
 import com.project.plateapi.role.domain.Role;
 import com.project.plateapi.security.custom.dto.CustomUser;
+import com.project.plateapi.user.controller.dto.request.UserInfoRequest;
 import com.project.plateapi.user.domain.UserRepository;
 import com.project.plateapi.user.domain.Users;
-import com.project.plateapi.user.dto.UserInfoResponseDto;
-import com.project.plateapi.user.dto.UserRequestDto;
 import com.project.plateapi.user.exception.UserNotFoundException;
+import com.project.plateapi.user.service.dto.response.UserInfoResponse;
 import com.project.plateapi.user_role.domain.UserRole;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,18 +37,11 @@ public class UserService {
 
 
     @Transactional
-    public ResponseEntity<Void> updateUser(UserRequestDto dto) {
-        Users user = userRepository.findByUserId(dto.getUserId());
+    public ResponseEntity<Void> updateUser(UserInfoRequest dto) {
+        Users user = userRepository.findByUserId(dto.userId());
+        String encodedPw = passwordEncoder.encode(dto.userPassword());
 
-        String userPassword = dto.getUserPassword();
-        String encodedPw = passwordEncoder.encode(userPassword);
-
-        user.setName(dto.getName());
-        user.setNickname(dto.getNickname());
-        user.setUserPassword(encodedPw);
-        user.setEmail(dto.getEmail());
-
-        user.update(user);
+        user.updateInfo(dto,encodedPw);
 
         return ResponseEntity.ok().build();
     }
@@ -129,17 +120,15 @@ public class UserService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    @Transactional
-    public ResponseEntity<?> retrieveUserInfo(CustomUser customUser) {
+
+    public ResponseEntity<UserInfoResponse> retrieveUserInfo(CustomUser customUser) {
         Users user = customUser.getUser();
-        UserInfoResponseDto dto = new UserInfoResponseDto(user);
+        UserInfoResponse dto = new UserInfoResponse(user);
 
-        // 인증된 사용자 정보
-        if (user != null) {
-            return new ResponseEntity<>(dto, HttpStatus.OK);
+        if (user.getUserId() == null) {
+            throw new UserNotFoundException("Not user");
         }
-
-        // 인증되지 않은 사용자 정보
-        return new ResponseEntity<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+        return ResponseEntity.ok()
+                .body(dto);
     }
 }

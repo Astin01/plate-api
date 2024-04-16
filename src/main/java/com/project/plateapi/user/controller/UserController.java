@@ -1,10 +1,13 @@
 package com.project.plateapi.user.controller;
 
 import com.project.plateapi.security.custom.dto.CustomUser;
+import com.project.plateapi.user.controller.dto.request.UserInfoRequest;
 import com.project.plateapi.user.domain.Users;
-import com.project.plateapi.user.dto.UserRequestDto;
 import com.project.plateapi.user.service.UserService;
+import com.project.plateapi.user.service.dto.response.UserInfoResponse;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +30,21 @@ public class UserController {
     private final UserService service;
 
     @PostMapping()
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDto dto) {
-        Users user = dto.toEntity();
+    public ResponseEntity<Void> createUser(@Valid @RequestBody UserInfoRequest dto) {
+        Users user = Users.builder()
+                .userId(dto.userId())
+                .userPassword(dto.userPassword())
+                .name(dto.name())
+                .nickname(dto.nickname())
+                .email(dto.email())
+                .createdDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .build();
         return service.createUser(user);
     }
 
     @Secured({"USER", "ADMIN"})
     @GetMapping("/info")
-    public ResponseEntity<?> retrieveUserInfo(@AuthenticationPrincipal CustomUser customUser) {
+    public ResponseEntity<UserInfoResponse> retrieveUserInfo(@AuthenticationPrincipal CustomUser customUser) {
         return service.retrieveUserInfo(customUser);
     }
 
@@ -46,7 +56,7 @@ public class UserController {
 
     @Secured({"USER", "ADMIN"})
     @PutMapping()
-    public ResponseEntity<Void> updateUser(@RequestBody UserRequestDto dto) {
+    public ResponseEntity<Void> updateUser(@RequestBody UserInfoRequest dto) {
         return service.updateUser(dto);
     }
 

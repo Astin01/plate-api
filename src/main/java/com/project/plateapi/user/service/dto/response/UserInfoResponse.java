@@ -1,4 +1,4 @@
-package com.project.plateapi.user.dto;
+package com.project.plateapi.user.service.dto.response;
 
 import com.project.plateapi.role.domain.Role;
 import com.project.plateapi.user.domain.Users;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserInfoResponseDto {
+public class UserInfoResponse {
     private Long id;
     private String userId;
     private String name;
@@ -23,7 +23,7 @@ public class UserInfoResponseDto {
     private String email;
     private UserRoleDto userRoles;
 
-    public UserInfoResponseDto(Users user){
+    public UserInfoResponse(Users user){
         this.id = user.getId();
         this.userId = user.getUserId();
         this.name = user.getName();
