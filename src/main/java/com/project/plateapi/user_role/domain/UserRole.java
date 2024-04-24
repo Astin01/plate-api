@@ -39,7 +39,4 @@ public class UserRole {
     @ManyToOne
     @JoinColumn(name = "ROLE_ID")
     private Role role;
-
-    @CreatedDate
-    private LocalDate created;
 }
