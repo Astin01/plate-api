@@ -10,6 +10,7 @@ import com.project.plateapi.user.service.dto.response.UserInfoResponse;
 import com.project.plateapi.user_role.domain.UserRole;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -33,25 +35,22 @@ public class UserService {
     private final UserRepository userRepository;
     private final EntityManager em;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
 
 
     @Transactional
-    public ResponseEntity<Void> updateUser(UserInfoRequest dto) {
+    public void updateUser(UserInfoRequest dto) {
         Users user = userRepository.findByUserId(dto.userId());
         String encodedPw = passwordEncoder.encode(dto.userPassword());
 
         user.updateInfo(dto,encodedPw);
-
-        return ResponseEntity.ok().build();
     }
 
     @Transactional
-    public ResponseEntity<Void> createUser(Users user) {
+    public Long createUser(Users user) {
         checkUser(user);
         saveUser(user);
 
-        return ResponseEntity.ok().build();
+        return user.getId();
     }
 
     private void checkUser(Users user) {
@@ -83,7 +82,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<Void> deleteUser(CustomUser customUser, String userId) {
+    public void deleteUser(CustomUser customUser, String userId) {
         Users user = customUser.getUser();
         String jwtUserId = user.getUserId();
 
@@ -92,43 +91,16 @@ public class UserService {
         }
 
         userRepository.deleteByUserId(userId);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    public void login(Users user, HttpServletRequest request) throws Exception {
-        String userId = user.getUserId();
-        String password = user.getUserPassword();
-        log.info("User " + userId);
-        log.info("Password " + password);
-
-        //아이디 패스워드 인증 토큰 생성
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userId, password);
-
-        // 토큰에 요청정보 등록
-        token.setDetails(new WebAuthenticationDetails(request));
-
-        //토큰을 이용해서 인증 요청- 로그인
-        Authentication authentication = authenticationManager.authenticate(token);
-
-        log.info("인증여부" + authentication.isAuthenticated());
-
-        User authUser = (User) authentication.getPrincipal();
-        log.info("사용자 아이디" + authUser.getName());
-
-        //시큐리티 컨텍스트에 인증된 사용자 등록
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
 
-    public ResponseEntity<UserInfoResponse> retrieveUserInfo(CustomUser customUser) {
+    public UserInfoResponse retrieveUserInfo(CustomUser customUser) {
         Users user = customUser.getUser();
         UserInfoResponse dto = new UserInfoResponse(user);
 
         if (user.getUserId() == null) {
             throw new UserNotFoundException("Not user");
         }
-        return ResponseEntity.ok()
-                .body(dto);
+        return dto;
     }
 }

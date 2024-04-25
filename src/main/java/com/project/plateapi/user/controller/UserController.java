@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,25 +40,33 @@ public class UserController {
                 .email(dto.email())
                 .createdDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .build();
-        return service.createUser(user);
+        service.createUser(user);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Secured({"USER", "ADMIN"})
     @GetMapping("/info")
     public ResponseEntity<UserInfoResponse> retrieveUserInfo(@AuthenticationPrincipal CustomUser customUser) {
-        return service.retrieveUserInfo(customUser);
+        UserInfoResponse response = service.retrieveUserInfo(customUser);
+
+        return ResponseEntity.ok(response);
     }
 
     @Secured({"USER", "ADMIN"})
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal CustomUser customUser, @PathVariable String id) {
-        return service.deleteUser(customUser, id);
+        service.deleteUser(customUser, id);
+
+        return ResponseEntity.noContent().build();
     }
 
     @Secured({"USER", "ADMIN"})
     @PutMapping()
     public ResponseEntity<Void> updateUser(@RequestBody UserInfoRequest dto) {
-        return service.updateUser(dto);
+        service.updateUser(dto);
+
+        return ResponseEntity.ok().build();
     }
 
 }
