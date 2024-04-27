@@ -14,11 +14,10 @@ import org.springframework.stereotype.Service;
 public class IconService {
     private final IconRepository iconRepository;
 
-    public ResponseEntity<IconResponseDto> findAllIcon() {
+    public IconResponseDto findAllIcon() {
         List<Icon> icons = iconRepository.findAll();
-        IconResponseDto responseDto = new IconResponseDto(icons);
 
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new IconResponseDto(icons);
     }
 
 }
