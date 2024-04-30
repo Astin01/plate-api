@@ -83,5 +83,9 @@ public class Users {
         this.userPassword = pw;
     }
 
+    public void closeUser(){
+        this.enabled = Boolean.FALSE;
+    }
+
 
 }

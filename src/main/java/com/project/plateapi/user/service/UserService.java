@@ -34,6 +34,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final EntityManager em;
+    private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -90,9 +91,33 @@ public class UserService {
             throw new IllegalArgumentException("Invalid");
         }
 
-        userRepository.deleteByUserId(userId);
+        Users userInfo = userRepository.findByUserId(userId);
+        userInfo.closeUser();
     }
 
+    public void login(Users user, HttpServletRequest request) throws Exception {
+        String userId = user.getUserId();
+        String password = user.getUserPassword();
+        log.info("User " + userId);
+        log.info("Password " + password);
+
+        //아이디 패스워드 인증 토큰 생성
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userId, password);
+
+        // 토큰에 요청정보 등록
+        token.setDetails(new WebAuthenticationDetails(request));
+
+        //토큰을 이용해서 인증 요청- 로그인
+        Authentication authentication = authenticationManager.authenticate(token);
+
+        log.info("인증여부" + authentication.isAuthenticated());
+
+        User authUser = (User) authentication.getPrincipal();
+        log.info("사용자 아이디" + authUser.getName());
+
+        //시큐리티 컨텍스트에 인증된 사용자 등록
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 
     public UserInfoResponse retrieveUserInfo(CustomUser customUser) {
         Users user = customUser.getUser();
