@@ -28,6 +28,10 @@ public class SuggestionService {
          Suggestion suggestion = suggestionRepository.findById(suggestionId)
                  .orElseThrow(IllegalArgumentException::new);
 
+         if(suggestion.isClosed()){
+             throw new IllegalStateException("닫힌 제안입니다");
+         }
+
         SuggestionResponse suggestionResponse = new SuggestionResponse(suggestion);
 
         return ResponseEntity.ok()
@@ -35,7 +39,7 @@ public class SuggestionService {
     }
 
     public ResponseEntity<SuggestionListResponse> findAllSuggestion() {
-        SuggestionListResponse suggestionListResponse = new SuggestionListResponse(suggestionRepository.findAll());
+        SuggestionListResponse suggestionListResponse = new SuggestionListResponse(suggestionRepository.findByClosed(Boolean.FALSE));
 
         return ResponseEntity.ok()
                 .body(suggestionListResponse);
@@ -78,11 +82,11 @@ public class SuggestionService {
         Suggestion suggestion = suggestionRepository.findById(suggestion_id)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if(notAdmin(customUser) || notUser(customUser,suggestion)){
+        if(notUser(customUser,suggestion) && notAdmin(customUser)){
             return ResponseEntity.badRequest().build();
         }
 
-       suggestionRepository.deleteById(suggestion_id);
+        suggestion.closeSuggestion();
 
         return ResponseEntity.noContent().build();
     }

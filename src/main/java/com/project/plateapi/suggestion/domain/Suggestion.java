@@ -60,4 +60,8 @@ public class Suggestion {
         this.title = dto.title();
         this.content = dto.content();
     }
+
+    public void closeSuggestion(){
+        this.closed = Boolean.TRUE;
+    }
 }
