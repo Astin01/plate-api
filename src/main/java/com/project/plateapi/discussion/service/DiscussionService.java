@@ -67,7 +67,7 @@ public class DiscussionService {
 
     }
 
-    public ResponseEntity<DiscussionResponseDto> getDiscussion(long id) {
+    public ResponseEntity<DiscussionResponseDto> getDiscussion(Long id) {
         Discussion discussion = discussionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(""));
 
         DiscussionResponseDto responseDto = new DiscussionResponseDto(discussion);
