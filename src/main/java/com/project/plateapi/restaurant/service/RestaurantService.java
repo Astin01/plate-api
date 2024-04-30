@@ -1,6 +1,6 @@
 package com.project.plateapi.restaurant.service;
 
-import com.project.plateapi.restaurant.controller.dto.request.RestaurantUpdateDto;
+import com.project.plateapi.restaurant.controller.dto.request.RestaurantRequest;
 import com.project.plateapi.restaurant.domain.Restaurant;
 import com.project.plateapi.restaurant.domain.RestaurantRepository;
 import com.project.plateapi.restaurant.service.dto.response.RestaurantListResponse;
@@ -8,7 +8,6 @@ import com.project.plateapi.restaurant.service.dto.response.RestaurantResponse;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,67 +17,58 @@ import org.springframework.transaction.annotation.Transactional;
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
-    public ResponseEntity<RestaurantListResponse> findAllRestaurants() {
-        RestaurantListResponse restaurantList = new RestaurantListResponse(restaurantRepository.findAll());
-
-        return ResponseEntity.ok()
-                .body(restaurantList);
+    public RestaurantListResponse findAllRestaurants() {
+        return new RestaurantListResponse(restaurantRepository.findAll());
     }
 
-    public ResponseEntity<RestaurantListResponse> findAllRestaurantsByCategory(String category) {
-        RestaurantListResponse restaurantList = new RestaurantListResponse(restaurantRepository.findAllByCategory(category));
-
-        return ResponseEntity.ok()
-                .body(restaurantList);
+    public RestaurantListResponse findAllRestaurantsByCategory(String category) {
+        return new RestaurantListResponse(restaurantRepository.findAllByCategory(category));
     }
 
-    public ResponseEntity<RestaurantResponse> findRestaurantByName(String name) {
+    public RestaurantResponse findRestaurantByName(String name) {
         String convertedName = URLDecoder.decode(name, StandardCharsets.UTF_8);
-        RestaurantResponse restaurant = new RestaurantResponse(restaurantRepository.findByName(convertedName));
 
-        return ResponseEntity.ok()
-                .body(restaurant);
+        return new RestaurantResponse(restaurantRepository.findByName(convertedName));
     }
 
-    public ResponseEntity<RestaurantResponse> findRestaurantById(Long id) {
+    public RestaurantResponse findRestaurantById(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
-        RestaurantResponse response = new RestaurantResponse(restaurant);
 
-        return ResponseEntity.ok()
-                .body(response);
+        return new RestaurantResponse(restaurant);
     }
 
     @Transactional
-    public ResponseEntity<Long> createRestaurant(Restaurant restaurant) {
+    public String createRestaurant(RestaurantRequest request) {
+        Restaurant restaurant= Restaurant.builder()
+                .name(request.name())
+                .category(request.category())
+                .icon(request.icon())
+                .content(request.content())
+                .build();
         restaurantRepository.save(restaurant);
 
-        return ResponseEntity.ok()
-                .body(restaurant.getId());
+        return restaurant.getName();
     }
 
     @Transactional
-    public ResponseEntity<Void> deleteRestaurant(Long id) {
+    public void deleteRestaurant(Long id) {
         restaurantRepository.deleteById(id);
-
-        return ResponseEntity.noContent().build();
     }
 
     @Transactional
-    public ResponseEntity<Void> changeRestaurantInfo(Long id, RestaurantUpdateDto updateDto) {
+    public void changeRestaurantInfo(Long id, RestaurantRequest request) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
 
         Restaurant updatedRestaurant = Restaurant.builder()
-                .name(updateDto.getName())
-                .icon(updateDto.getIcon())
-                .category(updateDto.getCategory())
-                .content(updateDto.getContent())
+                .name(request.name())
+                .icon(request.icon())
+                .category(request.category())
+                .content(request.content())
                 .build();
 
         restaurant.update(updatedRestaurant);
-
-        return ResponseEntity.ok().build();
 
     }
 }

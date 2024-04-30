@@ -1,12 +1,12 @@
 package com.project.plateapi.restaurant.controller;
 
+import com.project.plateapi.restaurant.controller.dto.request.RestaurantRequest;
 import com.project.plateapi.restaurant.service.RestaurantService;
-import com.project.plateapi.restaurant.domain.Restaurant;
-import com.project.plateapi.restaurant.controller.dto.request.RestaurantUpdateDto;
 import com.project.plateapi.restaurant.service.dto.response.RestaurantListResponse;
 import com.project.plateapi.restaurant.service.dto.response.RestaurantResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,36 +25,50 @@ public class RestaurantController {
 
     @GetMapping()
     public ResponseEntity<RestaurantListResponse> findAllRestaurants() {
-        return service.findAllRestaurants();
+        RestaurantListResponse response = service.findAllRestaurants();
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping()
-    public ResponseEntity<Long> createRestaurant(@Valid @RequestBody Restaurant restaurant) {
-        return service.createRestaurant(restaurant);
+    public ResponseEntity<Void> createRestaurant(@Valid @RequestBody RestaurantRequest request) {
+        service.createRestaurant(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/category/{category}")
     public ResponseEntity<RestaurantListResponse> findAllRestaurantsByCategory(@PathVariable String category) {
-        return service.findAllRestaurantsByCategory(category);
+        RestaurantListResponse response = service.findAllRestaurantsByCategory(category);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/name/{name}")
     public ResponseEntity<RestaurantResponse> findRestaurant(@PathVariable String name) {
-        return service.findRestaurantByName(name);
+        RestaurantResponse response = service.findRestaurantByName(name);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<RestaurantResponse> findRestaurantById(@PathVariable Long id) {
-        return service.findRestaurantById(id);
+        RestaurantResponse response = service.findRestaurantById(id);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/id/{id}")
-    public ResponseEntity<Void> changeRestaurantInfo(@PathVariable Long id, @Valid @RequestBody RestaurantUpdateDto updateDto){
-        return service.changeRestaurantInfo(id,updateDto);
+    public ResponseEntity<Void> changeRestaurantInfo(@PathVariable Long id,
+                                                     @Valid @RequestBody RestaurantRequest request) {
+        service.changeRestaurantInfo(id, request);
+
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/id/{id}")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable Long id) {
-        return service.deleteRestaurant(id);
+        service.deleteRestaurant(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
