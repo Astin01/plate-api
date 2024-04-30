@@ -27,7 +27,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    # gradle caching - 빌드 시간 향상
+    - name: Set YML
+      run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.APPLICATION_PROP }}" | base64 --decode > src/main/resources/application.properties
+          find src
+          
     - name: Gradle Caching
       uses: actions/cache@v3
       with:
@@ -38,11 +43,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
       
-    - name: Set YML
-      run: |
-          mkdir -p src/main/resources
-          echo "${{ secrets.APPLICATION_PROP }}" | base64 --decode > src/main/resources/application.properties
-          find src
           
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
