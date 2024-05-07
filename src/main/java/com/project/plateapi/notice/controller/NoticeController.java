@@ -1,8 +1,7 @@
 package com.project.plateapi.notice.controller;
 
+import com.project.plateapi.notice.controller.dto.request.NoticeRequestDto;
 import com.project.plateapi.notice.service.NoticeService;
-import com.project.plateapi.notice.controller.dto.request.NoticeCreateDto;
-import com.project.plateapi.notice.controller.dto.request.NoticeUpdateDto;
 import com.project.plateapi.notice.service.dto.response.NoticeListResponse;
 import com.project.plateapi.notice.service.dto.response.NoticeResponse;
 import jakarta.validation.Valid;
@@ -25,26 +24,34 @@ public class NoticeController {
 
     @GetMapping()
     public ResponseEntity<NoticeListResponse> findAllNotice() {
-        return noticeService.findAllNotice();
+        NoticeListResponse response = noticeService.findAllNotice();
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping()
-    public ResponseEntity<Long> createNotice(@Valid @RequestBody NoticeCreateDto createDto) {
-        return noticeService.createNotice(createDto);
+    public ResponseEntity<Void> createNotice(@Valid @RequestBody NoticeRequestDto request) {
+        noticeService.createNotice(request);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{notice_id}")
     public ResponseEntity<NoticeResponse> findNotice(@PathVariable Long notice_id) {
-        return noticeService.findNotice(notice_id);
+        NoticeResponse response = noticeService.findNotice(notice_id);
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{notice_id}")
-    public ResponseEntity<Void> editNotice(@PathVariable Long notice_id, @RequestBody NoticeUpdateDto updateDto) {
-        return noticeService.editNotice(notice_id, updateDto);
+    public ResponseEntity<Void> editNotice(@PathVariable Long notice_id, @RequestBody NoticeRequestDto request) {
+        noticeService.editNotice(notice_id, request);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{notice_id}")
     public ResponseEntity<Void> deleteNotice(@PathVariable Long notice_id) {
-        return noticeService.deleteNotice(notice_id);
+        noticeService.deleteNotice(notice_id);
+        return ResponseEntity.noContent().build();
     }
 }

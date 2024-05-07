@@ -1,5 +1,6 @@
 package com.project.plateapi.notice.domain;
 
+import com.project.plateapi.notice.controller.dto.request.NoticeRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,9 +46,9 @@ public class Notice {
     @LastModifiedDate
     private String closedDate;
 
-    public void update(Notice notice) {
-        this.title = notice.getTitle();
-        this.content = notice.getContent();
-        this.imageUrl = notice.getImageUrl();
+    public void update(NoticeRequestDto notice) {
+        this.title = notice.title();
+        this.content = notice.content();
+        this.imageUrl = notice.imageUrl();
     }
 }

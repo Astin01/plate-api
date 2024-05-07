@@ -1,11 +1,12 @@
 package com.project.plateapi.notice.service;
 
-import com.project.plateapi.notice.controller.dto.request.NoticeCreateDto;
-import com.project.plateapi.notice.controller.dto.request.NoticeUpdateDto;
+import com.project.plateapi.notice.controller.dto.request.NoticeRequestDto;
 import com.project.plateapi.notice.domain.Notice;
 import com.project.plateapi.notice.domain.NoticeRepository;
 import com.project.plateapi.notice.service.dto.response.NoticeListResponse;
 import com.project.plateapi.notice.service.dto.response.NoticeResponse;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,51 +18,42 @@ import org.springframework.transaction.annotation.Transactional;
 public class NoticeService {
     private final NoticeRepository noticeRepository;
 
-    public ResponseEntity<NoticeResponse> findNotice(Long noticeId) {
+    public NoticeResponse findNotice(Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        NoticeResponse noticeResponse = new NoticeResponse(notice);
-
-        return ResponseEntity.ok()
-                .body(noticeResponse);
+        return new NoticeResponse(notice);
     }
 
-    public ResponseEntity<NoticeListResponse> findAllNotice() {
-        NoticeListResponse allNoticeResponseDto = new NoticeListResponse(noticeRepository.findAll());
-
-        return ResponseEntity.ok()
-                .body(allNoticeResponseDto);
+    public NoticeListResponse findAllNotice() {
+        return new NoticeListResponse(noticeRepository.findAll());
     }
 
     @Transactional
-    public ResponseEntity<Long> createNotice(NoticeCreateDto createDto) {
-        Notice notice = createDto.toEntity();
+    public Long createNotice(NoticeRequestDto request) {
+        Notice notice = Notice.builder()
+                .title(request.title())
+                .content(request.content())
+                .imageUrl(request.imageUrl())
+                .createdDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .closed(false)
+                .build();
 
         noticeRepository.save(notice);
 
-        return ResponseEntity.ok()
-                .body(notice.getId());
+        return notice.getId();
     }
 
     @Transactional
-    public ResponseEntity<Void> deleteNotice(Long id) {
+    public void deleteNotice(Long id) {
         noticeRepository.deleteById(id);
-
-        return ResponseEntity.noContent().build();
     }
 
     @Transactional
-    public ResponseEntity<Void> editNotice(Long id, NoticeUpdateDto updateDto) {
+    public void editNotice(Long id, NoticeRequestDto request) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
 
-        notice.setTitle(updateDto.getTitle());
-        notice.setContent(updateDto.getContent());
-        notice.setImageUrl(updateDto.getImageUrl());
-
-        notice.update(notice);
-
-        return ResponseEntity.ok().build();
+        notice.update(request);
     }
 }
