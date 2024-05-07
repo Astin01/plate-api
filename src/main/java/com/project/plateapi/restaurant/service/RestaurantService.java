@@ -39,16 +39,16 @@ public class RestaurantService {
     }
 
     @Transactional
-    public String createRestaurant(RestaurantRequest request) {
+    public Long createRestaurant(RestaurantRequest request) {
         Restaurant restaurant= Restaurant.builder()
                 .name(request.name())
                 .category(request.category())
                 .icon(request.icon())
                 .content(request.content())
                 .build();
-        restaurantRepository.save(restaurant);
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
 
-        return restaurant.getName();
+        return savedRestaurant.getId();
     }
 
     @Transactional

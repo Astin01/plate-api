@@ -31,10 +31,11 @@ public class RestaurantController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> createRestaurant(@Valid @RequestBody RestaurantRequest request) {
-        service.createRestaurant(request);
+    public ResponseEntity<Long> createRestaurant(@Valid @RequestBody RestaurantRequest request) {
+        Long id = service.createRestaurant(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(id);
     }
 
     @GetMapping("/category/{category}")
