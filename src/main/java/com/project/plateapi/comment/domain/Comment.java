@@ -31,7 +31,7 @@ public class Comment {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name="COMMENT", columnDefinition = "TEXT")
+    @Column(name = "COMMENT", columnDefinition = "TEXT")
     @NotBlank
     private String comment;
 

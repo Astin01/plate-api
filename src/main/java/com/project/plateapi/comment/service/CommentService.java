@@ -23,18 +23,16 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final DiscussionRepository discussionRepository;
 
-    public ResponseEntity<CommentResponseDto> getComment(long discussion_id) {
+    public CommentResponseDto getComment(long discussion_id) {
         Discussion discussion = discussionRepository.findById(discussion_id).orElseThrow(IllegalArgumentException::new);
 
         List<Comment> commentList = commentRepository.findAllByDiscussion(discussion);
 
-        CommentResponseDto responseDto = new CommentResponseDto(commentList);
-
-        return ResponseEntity.ok(responseDto);
+        return new CommentResponseDto(commentList);
     }
 
     @Transactional
-    public ResponseEntity<Void> createComment(CustomUser customUser, Long id, CommentDto commentdto) {
+    public void createComment(CustomUser customUser, Long id, CommentDto commentdto) {
         final Users user = customUser.getUser();
         final Discussion discussion = discussionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("댓글 쓰기 실패."));
@@ -48,25 +46,20 @@ public class CommentService {
                 .build();
 
         commentRepository.save(comment);
-
-        return ResponseEntity.ok().build();
     }
 
     @Transactional
-    public ResponseEntity<Void> updateComment(Long id, CommentDto commentdto) {
+    public void updateComment(Long id, CommentDto commentdto) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id= " + id));
-        String modifiedDate= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        String modifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
         comment.update(commentdto.comment(), modifiedDate);
-
-        return ResponseEntity.ok().build();
     }
 
     @Transactional
-    public ResponseEntity<Void> deleteComment(long id) {
+    public void deleteComment(long id) {
         commentRepository.deleteById(id);
-        return  ResponseEntity.noContent().build();
     }
 
 }

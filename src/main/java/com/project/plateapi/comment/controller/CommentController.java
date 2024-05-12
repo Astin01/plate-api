@@ -6,6 +6,7 @@ import com.project.plateapi.comment.service.dto.response.CommentResponseDto;
 import com.project.plateapi.security.custom.dto.CustomUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,22 +26,32 @@ public class CommentController {
 
     @GetMapping("/{discussion_id}")
     public ResponseEntity<CommentResponseDto> getComment(@PathVariable long discussion_id) {
-        return service.getComment(discussion_id);
+        CommentResponseDto response = service.getComment(discussion_id);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{discussion_id}")
-    public ResponseEntity<Void> createComment(@AuthenticationPrincipal CustomUser customUser, @PathVariable long discussion_id, @Valid @RequestBody CommentDto commentdto) {
-        return service.createComment(customUser, discussion_id, commentdto);
+    public ResponseEntity<Void> createComment(@AuthenticationPrincipal CustomUser customUser,
+                                              @PathVariable long discussion_id,
+                                              @Valid @RequestBody CommentDto commentdto) {
+        service.createComment(customUser, discussion_id, commentdto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{comment_id}")
     public ResponseEntity<Void> updateComment(@PathVariable long comment_id, @RequestBody CommentDto commentdto) {
-        return service.updateComment(comment_id, commentdto);
+        service.updateComment(comment_id, commentdto);
+
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{comment_id}")
     public ResponseEntity<Void> deleteComment(@PathVariable long comment_id) {
-        return service.deleteComment(comment_id);
+        service.deleteComment(comment_id);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
