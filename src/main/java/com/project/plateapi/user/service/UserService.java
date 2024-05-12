@@ -10,6 +10,8 @@ import com.project.plateapi.user.service.dto.response.UserInfoResponse;
 import com.project.plateapi.user_role.domain.UserRole;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,20 +45,18 @@ public class UserService {
         Users user = userRepository.findByUserId(dto.userId());
         String encodedPw = passwordEncoder.encode(dto.userPassword());
 
-        user.updateInfo(dto,encodedPw);
+        user.updateInfo(dto, encodedPw);
     }
 
     @Transactional
-    public Long createUser(Users user) {
-        checkUser(user);
-        saveUser(user);
-
-        return user.getId();
+    public void createUser(UserInfoRequest request) {
+        checkUser(request);
+        saveUser(request);
     }
 
-    private void checkUser(Users user) {
-        String nickname = user.getNickname();
-        String email = user.getEmail();
+    private void checkUser(UserInfoRequest request) {
+        String nickname = request.nickname();
+        String email = request.email();
 
         if (userRepository.findByNickname(nickname) != null) {
             throw new IllegalArgumentException("Nickname already exists");
@@ -66,17 +66,24 @@ public class UserService {
         }
     }
 
-    private void saveUser(Users user) {
-        String encodedPassword = passwordEncoder.encode(user.getUserPassword());
-        user.setUserPassword(encodedPassword);
-        user.setEnabled(true);
+    private void saveUser(UserInfoRequest request) {
+        String encodedPassword = passwordEncoder.encode(request.userPassword());
+        Users user = Users.builder()
+                .userId(request.userId())
+                .userPassword(encodedPassword)
+                .name(request.name())
+                .nickname(request.nickname())
+                .email(request.email())
+                .enabled(true)
+                .createdDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .build();
         em.persist(user);
 
         Role role = em.find(Role.class, 1L);
 
         UserRole userRole = new UserRole();
-        userRole.setUser(user);
-        userRole.setRole(role);
+        userRole.setRole(user,role);
+
         em.persist(userRole);
 
         em.flush();

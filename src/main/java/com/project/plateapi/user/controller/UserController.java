@@ -31,16 +31,8 @@ public class UserController {
     private final UserService service;
 
     @PostMapping()
-    public ResponseEntity<Void> createUser(@Valid @RequestBody UserInfoRequest dto) {
-        Users user = Users.builder()
-                .userId(dto.userId())
-                .userPassword(dto.userPassword())
-                .name(dto.name())
-                .nickname(dto.nickname())
-                .email(dto.email())
-                .createdDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
-                .build();
-        service.createUser(user);
+    public ResponseEntity<Void> createUser(@Valid @RequestBody UserInfoRequest request) {
+        service.createUser(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
