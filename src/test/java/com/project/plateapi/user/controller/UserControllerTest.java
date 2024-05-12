@@ -15,6 +15,7 @@ import com.project.plateapi.security.custom.dto.CustomUser;
 import com.project.plateapi.user.controller.dto.request.UserInfoRequest;
 import com.project.plateapi.user.domain.UserRepository;
 import com.project.plateapi.user.domain.Users;
+import com.project.plateapi.user.service.UserService;
 import com.project.plateapi.user_role.domain.UserRole;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +28,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureMockMvc
-@Transactional
+@ActiveProfiles("test")
+@Sql("classpath:init.sql")
 @SpringBootTest
 class UserControllerTest {
 
@@ -44,7 +49,7 @@ class UserControllerTest {
     private static final String PASSWORD = "1q2W3e4r!";
     private static final String NAME = "김철수";
     private static final String NICKNAME = "불주먹";
-    private static final String EMAIL ="ace1225@naver.com";
+    private static final String EMAIL = "ace1225@naver.com";
     private static final String BASE_URL = "/api/users";
 
 
@@ -57,8 +62,8 @@ class UserControllerTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @MockBean
-    UserRepository userRepository;
+    @Autowired
+    UserService userService;
 
     @BeforeEach
     public void setUp() {
@@ -71,7 +76,7 @@ class UserControllerTest {
                 .email(EMAIL)
                 .build();
 
-        Role role = new Role(1L,"USER");
+        Role role = new Role(1L, "USER");
 
         UserRole userRole = new UserRole();
         userRole.setUser(user);
@@ -86,14 +91,15 @@ class UserControllerTest {
 
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
+
     @DisplayName("회원가입이 정상적으로 되는지 테스트한다")
     @Test
     void signUp() throws Exception {
-        String content = objectMapper.writeValueAsString(new UserInfoRequest(ID,PASSWORD,NAME,NICKNAME,EMAIL));
+        String content = objectMapper.writeValueAsString(new UserInfoRequest("0hee", "o01123", "김영희", "00", "0h22@naver.com"));
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
-                .content(content)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(HttpStatus.CREATED.value()));
     }
@@ -101,10 +107,10 @@ class UserControllerTest {
     @DisplayName("유저 정보를 조회할 수 있는지 테스트한다")
     @Test
     void getUserInfo() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL+"/info")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-        )
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/info")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.userId").value(ID))
                 .andExpect(jsonPath("$.name").value(NAME))
@@ -119,41 +125,26 @@ class UserControllerTest {
         String changedName = "홍길동";
         String changedPw = "ace1234";
         String changedNickName = "은하철도999";
-        String changeEmail ="rail999@gmail.com";
-        String content = objectMapper.writeValueAsString(new UserInfoRequest(ID,changedPw,changedName,changedNickName,changeEmail));
-        Users user = Users.builder()
-                .id(1L)
-                .userId(ID)
-                .userPassword(passwordEncoder.encode(PASSWORD))
-                .name(NAME)
-                .nickname(NICKNAME)
-                .email(EMAIL)
-                .build();
-        when(userRepository.findByUserId(ID)).thenReturn(user);
+        String changeEmail = "rail999@gmail.com";
+        String content = objectMapper.writeValueAsString(
+                new UserInfoRequest(ID, changedPw, changedName, changedNickName, changeEmail));
 
         mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL)
-                .content(content)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-        )
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().is(HttpStatus.OK.value()));
-
-        verify(userRepository, times(1)).findByUserId(ID);
     }
 
     @DisplayName("유저가 삭제되는지 테스트한다")
     @Test
     void deleteUser() throws Exception {
-        doNothing().when(userRepository).deleteByUserId(ID);
-        doThrow(new IllegalArgumentException("Unable to delete user")).when(userRepository).delete(any(Users.class));
-
-        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL+"/"+ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-        )
+        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().is(HttpStatus.NO_CONTENT.value()));
-
-        verify(userRepository, times(1)).deleteByUserId(ID);
     }
 
 

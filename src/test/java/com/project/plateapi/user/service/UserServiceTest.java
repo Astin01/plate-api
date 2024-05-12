@@ -10,6 +10,8 @@ import com.project.plateapi.user.domain.UserRepository;
 import com.project.plateapi.user.domain.Users;
 import com.project.plateapi.user.service.dto.response.UserInfoResponse;
 import com.project.plateapi.user_role.domain.UserRole;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +24,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestConstructor;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.jdbc.Sql;
 
-@Transactional
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
+@ActiveProfiles("test")
+@Sql("classpath:init.sql")
 @SpringBootTest
 class UserServiceTest {
 
@@ -50,6 +54,8 @@ class UserServiceTest {
                 .name(NAME)
                 .nickname(NICKNAME)
                 .email(EMAIL)
+                .enabled(true)
+                .createdDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .build());
     }
 
@@ -57,18 +63,12 @@ class UserServiceTest {
     @DisplayName("회원 가입을 한다")
     @Test
     void signUp() {
-        Users user = Users.builder()
-                .id(2L)
-                .userId("ace1234")
-                .userPassword(passwordEncoder.encode("good123!"))
-                .name("김길수")
-                .nickname("fore")
-                .email("fore@gmail.com")
-                .build();
+        userService.createUser(new UserInfoRequest("0h22","oh12234", "oh22@naver.com", "김영희","안녕희"));
+        Users user = userRepository.findByUserId("0h22");
 
-        Long id = userService.createUser(user);
-
-        assertThat(id).isNotNull();
+        assertThat(user.getName()).isEqualTo("김영희");
+        assertThat(user.getNickname()).isEqualTo("안녕희");
+        assertThat(user.getEmail()).isEqualTo("oh22@naver.com");
     }
 
 
@@ -82,8 +82,8 @@ class UserServiceTest {
         UserInfoRequest request = new UserInfoRequest(ID, changedPassword, changedName, changedNickName, changedEmail);
 
         userService.updateUser(request);
-
         Users user = userRepository.findByUserId(ID);
+
         assertThat(user.getUserPassword()).isNotEqualTo(passwordEncoder.encode(PASSWORD));
         assertThat(user.getName()).isNotEqualTo(NAME);
         assertThat(user.getNickname()).isNotEqualTo(NICKNAME);
@@ -99,8 +99,8 @@ class UserServiceTest {
             Role role = new Role(1L, "USER");
 
             UserRole userRole = new UserRole();
-            userRole.setUser(savedHost);
-            userRole.setRole(role);
+            userRole.setRole(savedHost,role);
+
             List<UserRole> roles = new ArrayList<>();
             roles.add(userRole);
             savedHost.setUserRoles(roles);
