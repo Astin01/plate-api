@@ -22,7 +22,7 @@ class NoticeServiceTest {
 
     @DisplayName("공지가 모두 조회되는지 테스트한다")
     @Test
-    void findAllNotice(){
+    void findAllNotice() {
         NoticeListResponse response = noticeService.findAllNotice();
 
         assertThat(response.notices().size()).isEqualTo(2);
@@ -30,7 +30,7 @@ class NoticeServiceTest {
 
     @DisplayName("공지가 조회되는지 테스트한다")
     @Test
-    void findNotice(){
+    void findNotice() {
         Long id = 1L;
         NoticeResponse response = noticeService.findNotice(id);
         assertThat(response.id()).isEqualTo("밥은");

@@ -23,7 +23,7 @@ public class UserInfoResponse {
     private String email;
     private UserRoleDto userRoles;
 
-    public UserInfoResponse(Users user){
+    public UserInfoResponse(Users user) {
         this.id = user.getId();
         this.userId = user.getUserId();
         this.name = user.getName();
@@ -31,11 +31,13 @@ public class UserInfoResponse {
         this.nickname = user.getNickname();
         this.userRoles = new UserRoleDto(user.getUserRoles());
     }
+
     @Getter
     public static class UserRoleDto {
         private final List<Role> userRole;
+
         public UserRoleDto(List<UserRole> userRoleLists) {
-            this.userRole = userRoleLists.stream().map(role->role.getRole()).collect(Collectors.toList());
+            this.userRole = userRoleLists.stream().map(role -> role.getRole()).collect(Collectors.toList());
         }
     }
 

@@ -22,9 +22,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     /**
-     * jwt 요청 필터
-     * - request > headers > Authorization(jwt)
-     * - jwt 토큰 유효성 검사
+     * jwt 요청 필터 - request > headers > Authorization(jwt) - jwt 토큰 유효성 검사
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -36,9 +34,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         // jwt 토큰이 없으면 다음 필터로 이동
         // Bearer + {jwt} 체크
-        if(header == null || !header.startsWith(JwtConstants.TOKEN_PREFIX)){
+        if (header == null || !header.startsWith(JwtConstants.TOKEN_PREFIX)) {
             filterChain.doFilter(request, response);
-        }else {
+        } else {
             // jwt
             // Bearer + {jwt} -> 'Bearer' 제거
             String jwt = header.replace(JwtConstants.TOKEN_PREFIX, "");
@@ -53,7 +51,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 // 로그인
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-             //다음 필터
+            //다음 필터
             filterChain.doFilter(request, response);
         }
     }

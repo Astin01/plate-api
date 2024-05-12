@@ -25,7 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableMethodSecurity(prePostEnabled = false,securedEnabled = true)// preAuthorize , @postAuthorize, @Secured 활성화
+@EnableMethodSecurity(prePostEnabled = false, securedEnabled = true)// preAuthorize , @postAuthorize, @Secured 활성화
 public class WebSecurityConfig {
 
     private final CustomUserDetailService customUserDetailService;
@@ -50,7 +50,7 @@ public class WebSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         //필터 설정
-        http.addFilterAt(new JwtAuthenticationFilter(authenticationManager,jwtTokenProvider)
+        http.addFilterAt(new JwtAuthenticationFilter(authenticationManager, jwtTokenProvider)
                         , UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtRequestFilter(jwtTokenProvider)
                         , UsernamePasswordAuthenticationFilter.class);

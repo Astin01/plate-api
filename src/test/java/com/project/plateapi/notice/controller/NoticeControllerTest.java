@@ -34,9 +34,9 @@ class NoticeControllerTest {
     @Test
     void findAllNotice() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-        )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.notices", hasSize(2)));
     }
@@ -45,7 +45,7 @@ class NoticeControllerTest {
     @Test
     void findNotice() throws Exception {
         Long noticeId = 1L;
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL+"/{notice_id}",noticeId)
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{notice_id}", noticeId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                 )
@@ -55,7 +55,7 @@ class NoticeControllerTest {
     @DisplayName("공지가 생성되는지 테스트한다")
     @Test
     void createNotice() throws Exception {
-        NoticeRequestDto request = new NoticeRequestDto("공지합니다","공지입니다","https://fth.cg/z80.png");
+        NoticeRequestDto request = new NoticeRequestDto("공지합니다", "공지입니다", "https://fth.cg/z80.png");
         String content = objectMapper.writeValueAsString(request);
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                         .content(content)
@@ -69,9 +69,9 @@ class NoticeControllerTest {
     @Test
     void editNotice() throws Exception {
         Long noticeId = 1L;
-        NoticeRequestDto request = new NoticeRequestDto("공지","공지","http://image.png");
+        NoticeRequestDto request = new NoticeRequestDto("공지", "공지", "http://image.png");
         String content = objectMapper.writeValueAsString(request);
-        mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL+"/{notice_id}",noticeId)
+        mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/{notice_id}", noticeId)
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -83,7 +83,7 @@ class NoticeControllerTest {
     @Test
     void deleteNotice() throws Exception {
         Long noticeId = 1L;
-        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL+"/{notice_id}",noticeId)
+        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{notice_id}", noticeId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                 )

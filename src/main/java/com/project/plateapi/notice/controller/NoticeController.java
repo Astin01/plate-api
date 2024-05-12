@@ -46,12 +46,14 @@ public class NoticeController {
     @PutMapping("/{notice_id}")
     public ResponseEntity<Void> editNotice(@PathVariable Long notice_id, @RequestBody NoticeRequestDto request) {
         noticeService.editNotice(notice_id, request);
+
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{notice_id}")
     public ResponseEntity<Void> deleteNotice(@PathVariable Long notice_id) {
         noticeService.deleteNotice(notice_id);
+
         return ResponseEntity.noContent().build();
     }
 }

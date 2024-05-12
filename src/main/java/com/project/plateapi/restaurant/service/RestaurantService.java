@@ -40,7 +40,7 @@ public class RestaurantService {
 
     @Transactional
     public Long createRestaurant(RestaurantRequest request) {
-        Restaurant restaurant= Restaurant.builder()
+        Restaurant restaurant = Restaurant.builder()
                 .name(request.name())
                 .category(request.category())
                 .icon(request.icon())

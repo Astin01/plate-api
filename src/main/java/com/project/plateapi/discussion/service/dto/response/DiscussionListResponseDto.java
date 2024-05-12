@@ -16,13 +16,14 @@ import lombok.NoArgsConstructor;
 public class DiscussionListResponseDto {
     private discussionDto discussions;
 
-    public DiscussionListResponseDto(List<Discussion> discussionList){
+    public DiscussionListResponseDto(List<Discussion> discussionList) {
         this.discussions = new discussionDto(discussionList);
     }
 
     @Getter
     public static class discussionDto {
         private List<Discussion> discussions;
+
         public discussionDto(List<Discussion> discussionList) {
             this.discussions = discussionList.stream().map(discussion1 -> {
                 Discussion discussion = new Discussion();

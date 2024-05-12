@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public record SuggestionListResponse(List<Suggestion> suggestionList) {
-    public SuggestionListResponse(List<Suggestion> suggestionList){
-        this.suggestionList= suggestionList.stream().map(suggestion -> {
+    public SuggestionListResponse(List<Suggestion> suggestionList) {
+        this.suggestionList = suggestionList.stream().map(suggestion -> {
             Suggestion suggestions = new Suggestion();
             suggestions.setId(suggestion.getId());
             suggestions.setTitle(suggestion.getTitle());

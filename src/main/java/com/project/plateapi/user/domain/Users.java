@@ -39,7 +39,7 @@ public class Users {
     private Long id;
 
     @NotNull
-    @Size(min = 4 ,max=10, message = "Id should have at least 4 characters")
+    @Size(min = 4, max = 10, message = "Id should have at least 4 characters")
     @Column(name = "USER_ID")
     private String userId;
 
@@ -64,7 +64,7 @@ public class Users {
     @Column(name = "USER_EMAIL")
     private String email;
 
-    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserRole> userRoles = new ArrayList<>();
 
     @Column(name = "CREATED_DATE")
@@ -78,14 +78,14 @@ public class Users {
     @Column(name = "ENABLED")
     private boolean enabled = Boolean.TRUE;
 
-    public void updateInfo(UserInfoRequest dto,String pw) {
+    public void updateInfo(UserInfoRequest dto, String pw) {
         this.name = dto.name();
         this.nickname = dto.nickname();
         this.email = dto.email();
         this.userPassword = pw;
     }
 
-    public void closeUser(){
+    public void closeUser() {
         this.enabled = Boolean.FALSE;
     }
 

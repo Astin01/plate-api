@@ -55,6 +55,7 @@ public class RestaurantController {
     @GetMapping("/id/{id}")
     public ResponseEntity<RestaurantResponse> findRestaurantById(@PathVariable Long id) {
         RestaurantResponse response = service.findRestaurantById(id);
+
         return ResponseEntity.ok(response);
     }
 

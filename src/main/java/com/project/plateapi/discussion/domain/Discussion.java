@@ -36,8 +36,8 @@ public class Discussion {
     @Column(name = "TITLE", columnDefinition = "VARCHAR(20)", nullable = false)
     private String title;
 
-    @Column(name="CONTENT",columnDefinition = "TEXT")
-    private  String content;
+    @Column(name = "CONTENT", columnDefinition = "TEXT")
+    private String content;
 
     @Column(name = "CLOSED")
     private boolean closed;
@@ -51,10 +51,10 @@ public class Discussion {
     private String closedDate;
 
     @ManyToOne
-    @JoinColumn(name="USER_ID")
+    @JoinColumn(name = "USER_ID")
     private Users user;
 
-    @OneToMany(mappedBy = "discussion",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "discussion", fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
     public void edit(Discussion discussion) {

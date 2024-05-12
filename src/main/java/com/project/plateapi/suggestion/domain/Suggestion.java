@@ -31,13 +31,13 @@ public class Suggestion {
     private Long id;
 
     @Size(min = 1, message = "Name should have at least 1 characters")
-    @Column(name = "TITLE",columnDefinition = "VARCHAR(20)", nullable = false)
+    @Column(name = "TITLE", columnDefinition = "VARCHAR(20)", nullable = false)
     private String title;
 
-    @Column(name="CONTENT",columnDefinition = "TEXT")
-    private  String content;
+    @Column(name = "CONTENT", columnDefinition = "TEXT")
+    private String content;
 
-    @Column(name="CLOSED")
+    @Column(name = "CLOSED")
     private boolean closed;
 
     @Column(name = "CREATED_DATE", nullable = false)
@@ -49,19 +49,19 @@ public class Suggestion {
     private String closedDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="USER_ID")
+    @JoinColumn(name = "USER_ID")
     private Users user;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="RESTAURANT_ID")
+    @JoinColumn(name = "RESTAURANT_ID")
     private Restaurant restaurant;
 
-    public void editSuggestion(SuggestionRequest dto){
+    public void editSuggestion(SuggestionRequest dto) {
         this.title = dto.title();
         this.content = dto.content();
     }
 
-    public void closeSuggestion(){
+    public void closeSuggestion() {
         this.closed = Boolean.TRUE;
     }
 }

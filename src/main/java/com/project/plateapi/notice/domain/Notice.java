@@ -26,16 +26,16 @@ public class Notice {
     private Long id;
 
     @Size(min = 1, message = "Name should have at least 1 characters")
-    @Column(name = "TITLE",columnDefinition = "VARCHAR(20)", nullable = false)
+    @Column(name = "TITLE", columnDefinition = "VARCHAR(20)", nullable = false)
     private String title;
 
-    @Column(name="CONTENT",columnDefinition = "TEXT")
-    private  String content;
+    @Column(name = "CONTENT", columnDefinition = "TEXT")
+    private String content;
 
-    @Column(name="IMAGE")
+    @Column(name = "IMAGE")
     private String imageUrl;
 
-    @Column(name="CLOSED")
+    @Column(name = "CLOSED")
     private boolean closed;
 
     @Column(name = "CREATED_DATE", nullable = false)

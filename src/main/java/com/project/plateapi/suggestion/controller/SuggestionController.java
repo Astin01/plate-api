@@ -7,6 +7,7 @@ import com.project.plateapi.suggestion.service.dto.response.SuggestionListRespon
 import com.project.plateapi.suggestion.service.dto.response.SuggestionResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,35 +28,52 @@ public class SuggestionController {
 
     @GetMapping()
     public ResponseEntity<SuggestionListResponse> findAllSuggestion() {
-        return suggestionService.findAllSuggestion();
+        SuggestionListResponse response = suggestionService.findAllSuggestion();
+
+        return ResponseEntity.ok(response);
     }
 
-    @Secured({"USER","ADMIN"})
+    @Secured({"USER", "ADMIN"})
     @PostMapping("/{restaurant_id}")
-    public ResponseEntity<Long> createSuggestion(@AuthenticationPrincipal CustomUser customUser,@PathVariable Long restaurant_id , @Valid @RequestBody SuggestionRequest requestDto) {
-        return suggestionService.createSuggestion(customUser,restaurant_id, requestDto);
+    public ResponseEntity<Void> createSuggestion(@AuthenticationPrincipal CustomUser customUser,
+                                                 @PathVariable Long restaurant_id,
+                                                 @Valid @RequestBody SuggestionRequest requestDto) {
+        suggestionService.createSuggestion(customUser, restaurant_id, requestDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{suggestion_id}")
     public ResponseEntity<SuggestionResponse> findSuggestion(@PathVariable Long suggestion_id) {
-        return suggestionService.findSuggestion(suggestion_id);
+        SuggestionResponse response = suggestionService.findSuggestion(suggestion_id);
+
+        return ResponseEntity.ok(response);
     }
 
-    @Secured({"USER","ADMIN"})
+    @Secured({"USER", "ADMIN"})
     @PutMapping("/{suggestion_id}")
-    public ResponseEntity<Void> editSuggestion(@AuthenticationPrincipal CustomUser customUser,@PathVariable Long suggestion_id, @RequestBody SuggestionRequest requestDto) {
-        return suggestionService.editSuggestion(customUser,suggestion_id, requestDto);
+    public ResponseEntity<Void> editSuggestion(@AuthenticationPrincipal CustomUser customUser,
+                                               @PathVariable Long suggestion_id,
+                                               @RequestBody SuggestionRequest requestDto) {
+        suggestionService.editSuggestion(customUser, suggestion_id, requestDto);
+
+        return ResponseEntity.ok().build();
     }
 
-    @Secured({"USER","ADMIN"})
+    @Secured({"USER", "ADMIN"})
     @DeleteMapping("/{suggestion_id}")
-    public ResponseEntity<Void> deleteSuggestion(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long suggestion_id) {
-        return suggestionService.deleteSuggestion(customUser,suggestion_id);
+    public ResponseEntity<Void> deleteSuggestion(@AuthenticationPrincipal CustomUser customUser,
+                                                 @PathVariable Long suggestion_id) {
+        suggestionService.deleteSuggestion(customUser, suggestion_id);
+
+        return ResponseEntity.noContent().build();
     }
 
     @Secured("ADMIN")
     @PutMapping("/toRestaurant/{suggestion_id}")
-    public ResponseEntity<Long> putSuggestionToRestaurant(@PathVariable Long suggestion_id) {
-        return suggestionService.putSuggestionToRestaurant(suggestion_id);
+    public ResponseEntity<Void> putSuggestionToRestaurant(@PathVariable Long suggestion_id) {
+        suggestionService.putSuggestionToRestaurant(suggestion_id);
+
+        return ResponseEntity.ok().build();
     }
 }

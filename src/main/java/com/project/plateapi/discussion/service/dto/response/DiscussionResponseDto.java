@@ -24,7 +24,7 @@ public class DiscussionResponseDto {
     private UserIdDto userId;
     private CommentDto comments;
 
-    public DiscussionResponseDto(Discussion discussion){
+    public DiscussionResponseDto(Discussion discussion) {
         this.id = discussion.getId();
         this.title = discussion.getTitle();
         this.content = discussion.getContent();
@@ -34,15 +34,18 @@ public class DiscussionResponseDto {
     }
 
     @Getter
-    public static class UserIdDto{
+    public static class UserIdDto {
         private final String userId;
-        public UserIdDto(Users user){
+
+        public UserIdDto(Users user) {
             this.userId = user.getUserId();
         }
     }
+
     @Getter
     public static class CommentDto {
         private final List<DiscussionCommentDto> comment;
+
         public CommentDto(List<Comment> commentLists) {
             this.comment = commentLists.stream().map(
                     comment1 -> {
@@ -57,7 +60,7 @@ public class DiscussionResponseDto {
 
         @Getter
         @Setter
-        public class DiscussionCommentDto{
+        public class DiscussionCommentDto {
             private long id;
             private String comment;
             private String userNickname;

@@ -24,29 +24,25 @@ public class SuggestionService {
     private final SuggestionRepository suggestionRepository;
     private final RestaurantRepository restaurantRepository;
 
-    public ResponseEntity<SuggestionResponse> findSuggestion(Long suggestionId) {
-         Suggestion suggestion = suggestionRepository.findById(suggestionId)
-                 .orElseThrow(IllegalArgumentException::new);
+    public SuggestionResponse findSuggestion(Long suggestionId) {
+        Suggestion suggestion = suggestionRepository.findById(suggestionId)
+                .orElseThrow(IllegalArgumentException::new);
 
-         if(suggestion.isClosed()){
-             throw new IllegalStateException("닫힌 제안입니다");
-         }
+        if (suggestion.isClosed()) {
+            throw new IllegalStateException("닫힌 제안입니다");
+        }
 
-        SuggestionResponse suggestionResponse = new SuggestionResponse(suggestion);
-
-        return ResponseEntity.ok()
-                .body(suggestionResponse);
+        return new SuggestionResponse(suggestion);
     }
 
-    public ResponseEntity<SuggestionListResponse> findAllSuggestion() {
-        SuggestionListResponse suggestionListResponse = new SuggestionListResponse(suggestionRepository.findByClosed(Boolean.FALSE));
+    public SuggestionListResponse findAllSuggestion() {
 
-        return ResponseEntity.ok()
-                .body(suggestionListResponse);
+        return new SuggestionListResponse(
+                suggestionRepository.findByClosed(Boolean.FALSE));
     }
 
     @Transactional
-    public ResponseEntity<Long> createSuggestion(CustomUser customUser, Long id , SuggestionRequest requestDto) {
+    public Long createSuggestion(CustomUser customUser, Long id, SuggestionRequest requestDto) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
         Suggestion suggestion = Suggestion.builder()
@@ -60,39 +56,36 @@ public class SuggestionService {
 
         suggestionRepository.save(suggestion);
 
-        return ResponseEntity.ok()
-                .body(suggestion.getId());
+        return id;
     }
+
     @Transactional
-    public ResponseEntity<Void> editSuggestion(CustomUser customUser, Long suggestion_id, SuggestionRequest requestDto) {
+    public void editSuggestion(CustomUser customUser, Long suggestion_id,
+                                               SuggestionRequest requestDto) {
         Suggestion suggestion = suggestionRepository.findById(suggestion_id)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if(notUser(customUser, suggestion)){
-            return ResponseEntity.badRequest().build();
+        if (notUser(customUser, suggestion)) {
+            throw new IllegalArgumentException("권한이 없습니다");
         }
 
         suggestion.editSuggestion(requestDto);
-
-        return ResponseEntity.ok().build();
     }
 
     @Transactional
-    public ResponseEntity<Void> deleteSuggestion(CustomUser customUser,Long suggestion_id) {
+    public void deleteSuggestion(CustomUser customUser, Long suggestion_id) {
         Suggestion suggestion = suggestionRepository.findById(suggestion_id)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if(notUser(customUser,suggestion) && notAdmin(customUser)){
-            return ResponseEntity.badRequest().build();
+        if (notUser(customUser, suggestion) && notAdmin(customUser)) {
+            throw new IllegalArgumentException("권한이 없습니다");
         }
 
         suggestion.closeSuggestion();
-
-        return ResponseEntity.noContent().build();
     }
 
     @Transactional
-    public ResponseEntity<Long> putSuggestionToRestaurant(Long id) {
+    public Long putSuggestionToRestaurant(Long id) {
         Suggestion suggestion = suggestionRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -105,20 +98,19 @@ public class SuggestionService {
 
         restaurant.update(restaurant);
 
-        return ResponseEntity.ok()
-                .body(restaurant.getId());
+        return id;
     }
 
-    private boolean notUser(CustomUser customUser,Suggestion suggestion){
+    private boolean notUser(CustomUser customUser, Suggestion suggestion) {
         String userId = customUser.getUsername();
         String suggestionUserId = suggestion.getUser().getUserId();
 
         return !userId.equals(suggestionUserId);
     }
 
-    private boolean notAdmin(CustomUser customUser){
+    private boolean notAdmin(CustomUser customUser) {
         Collection<? extends GrantedAuthority> auth = customUser.getAuthorities();
-        for(GrantedAuthority auths : auth){
+        for (GrantedAuthority auths : auth) {
             return !auths.getAuthority().equals("ADMIN");
         }
         return true;

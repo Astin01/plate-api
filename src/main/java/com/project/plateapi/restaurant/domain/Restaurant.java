@@ -28,14 +28,14 @@ public class Restaurant {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name="CATEGORY")
+    @Column(name = "CATEGORY")
     private String category;
 
-    @Column(name="ICON")
+    @Column(name = "ICON")
     private String icon;
 
-    @Column(name="CONTENT",columnDefinition = "TEXT")
-    private  String content;
+    @Column(name = "CONTENT", columnDefinition = "TEXT")
+    private String content;
 
     public void update(Restaurant restaurant) {
         this.name = restaurant.getName();

@@ -20,62 +20,51 @@ public class DiscussionService {
     private final DiscussionRepository discussionRepository;
 
     @Transactional
-    public ResponseEntity<Void> createDiscussion(CustomUser customUser, Discussion discussion) {
+    public void createDiscussion(CustomUser customUser, Discussion discussion) {
         Users user = customUser.getUser();
 
         discussion.setUser(user);
         discussionRepository.save(discussion);
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<Void> editDiscussion(CustomUser customUser, Long id, DiscussionEditDto dto) {
+    public void editDiscussion(CustomUser customUser, Long id, DiscussionEditDto dto) {
         Discussion discussion = discussionRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 
-        if(notUser(customUser, discussion)){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (notUser(customUser, discussion)) {
+            throw new IllegalArgumentException("권한이 없습니다");
         }
 
         discussion.setTitle(dto.getTitle());
         discussion.setContent(dto.getContent());
 
         discussion.edit(discussion);
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<Void> deleteDiscussion(CustomUser customUser,long id) {
+    public void deleteDiscussion(CustomUser customUser, long id) {
         Discussion discussion = discussionRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 
-        if(notUser(customUser, discussion)){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (notUser(customUser, discussion)) {
+            throw new IllegalArgumentException("권한이 없습니다");
         }
 
         discussionRepository.deleteById(id);
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ResponseEntity<DiscussionListResponseDto> getAllDiscussion(boolean closed) {
+    public DiscussionListResponseDto getAllDiscussion(boolean closed) {
         List<Discussion> discussionList = discussionRepository.findAllByClosed(closed);
 
-        DiscussionListResponseDto responseDto = new DiscussionListResponseDto(discussionList);
-
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
-
+        return  new DiscussionListResponseDto(discussionList);
     }
 
-    public ResponseEntity<DiscussionResponseDto> getDiscussion(Long id) {
+    public DiscussionResponseDto getDiscussion(Long id) {
         Discussion discussion = discussionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(""));
 
-        DiscussionResponseDto responseDto = new DiscussionResponseDto(discussion);
-
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new DiscussionResponseDto(discussion);
     }
 
-    private boolean notUser(CustomUser customUser, Discussion discussion){
+    private boolean notUser(CustomUser customUser, Discussion discussion) {
         String userId = customUser.getUsername();
         String discussionUserId = discussion.getUser().getUserId();
 

@@ -21,14 +21,14 @@ public class ExceptionController {
     }
 
     // 401
-    @ExceptionHandler({ Unauthorized.class })
+    @ExceptionHandler({Unauthorized.class})
     public ResponseEntity<?> handleAccessDeniedException(final Unauthorized ex) {
         log.warn("error", ex);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
     // 500
-    @ExceptionHandler({ Exception.class })
+    @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAll(final Exception ex) {
         log.info(ex.getClass().getName());
         log.error("error", ex);

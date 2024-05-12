@@ -20,12 +20,13 @@ public class CommentResponseDto {
     public CommentResponseDto(List<Comment> commentList) {
         this.commentContent = new UserCommentDto(commentList);
     }
+
     @Getter
     public static class UserCommentDto {
         private final List<ModifyCommentDto> comments;
 
         public UserCommentDto(List<Comment> commentList) {
-            this.comments = commentList.stream().map(comment1->{
+            this.comments = commentList.stream().map(comment1 -> {
                 ModifyCommentDto dto = new ModifyCommentDto();
                 dto.setId(comment1.getId());
                 dto.setComment(comment1.getComment());
@@ -37,7 +38,7 @@ public class CommentResponseDto {
 
         @Getter
         @Setter
-        public class ModifyCommentDto{
+        public class ModifyCommentDto {
             private Long id;
             private String comment;
             private String createdDate;

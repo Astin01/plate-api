@@ -16,7 +16,8 @@ public class IconController {
 
     @GetMapping()
     public ResponseEntity<IconResponseDto> findAllIcon() {
-        IconResponseDto response =service.findAllIcon();
+        IconResponseDto response = service.findAllIcon();
+
         return ResponseEntity.ok(response);
     }
 
