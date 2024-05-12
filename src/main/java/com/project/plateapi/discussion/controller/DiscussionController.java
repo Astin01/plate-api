@@ -28,32 +28,44 @@ public class DiscussionController {
     private final DiscussionService service;
 
     @GetMapping()
-    public ResponseEntity<DiscussionListResponseDto> getAllDiscussion(){
+    public ResponseEntity<DiscussionListResponseDto> getAllDiscussion() {
         boolean isClosed = false;
-        return service.getAllDiscussion(isClosed);
+        DiscussionListResponseDto response = service.getAllDiscussion(isClosed);
+
+        return ResponseEntity.ok(response);
     }
 
     @Secured("USER")
     @PostMapping()
-    public ResponseEntity<Void> createDiscussion(@AuthenticationPrincipal CustomUser customUser, @Valid @RequestBody DiscussionCreateDto createDto) {
+    public ResponseEntity<Void> createDiscussion(@AuthenticationPrincipal CustomUser customUser,
+                                                 @Valid @RequestBody DiscussionCreateDto createDto) {
         Discussion discussion = createDto.toEntity();
-        return service.createDiscussion(customUser, discussion);
+        service.createDiscussion(customUser, discussion);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DiscussionResponseDto> getDiscussion(@PathVariable Long id){
-        return service.getDiscussion(id);
+    public ResponseEntity<DiscussionResponseDto> getDiscussion(@PathVariable Long id) {
+         DiscussionResponseDto response = service.getDiscussion(id);
+
+         return ResponseEntity.ok(response);
     }
 
     @Secured("USER")
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateDiscussionTitle(@AuthenticationPrincipal CustomUser customUser,@PathVariable long id, @RequestBody DiscussionEditDto editDto) {
-        return service.editDiscussion(customUser,id, editDto);
+    public ResponseEntity<Void> updateDiscussionTitle(@AuthenticationPrincipal CustomUser customUser,
+                                                      @PathVariable long id, @RequestBody DiscussionEditDto editDto) {
+        service.editDiscussion(customUser, id, editDto);
+
+        return ResponseEntity.ok().build();
     }
 
     @Secured("USER")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteDiscussion(@AuthenticationPrincipal CustomUser customUser,@PathVariable long id) {
-        return service.deleteDiscussion(customUser,id);
+    public ResponseEntity<Void> deleteDiscussion(@AuthenticationPrincipal CustomUser customUser, @PathVariable long id) {
+        service.deleteDiscussion(customUser, id);
+
+        return ResponseEntity.noContent().build();
     }
 }
