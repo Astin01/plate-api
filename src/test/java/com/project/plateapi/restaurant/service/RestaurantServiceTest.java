@@ -1,5 +1,6 @@
 package com.project.plateapi.restaurant.service;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.project.plateapi.restaurant.controller.dto.request.RestaurantRequest;
@@ -8,32 +9,36 @@ import com.project.plateapi.restaurant.domain.RestaurantRepository;
 import com.project.plateapi.restaurant.service.dto.response.RestaurantListResponse;
 import com.project.plateapi.restaurant.service.dto.response.RestaurantResponse;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestConstructor;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.jdbc.Sql;
 
-@Transactional
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+@ActiveProfiles("test")
+@Sql("classpath:init.sql")
 @RequiredArgsConstructor
 @SpringBootTest
 class RestaurantServiceTest {
     private final RestaurantService restaurantService;
     private final RestaurantRepository restaurantRepository;
-    private static final Long ID = 1L;
-    private static final String NAME = "김밥천국";
-    private static final String CATEGORY = "ko";
-    private static final String ICON = "stockpot";
-    private static final String CONTENT = "김밥천국은 간단하게 끼니를 떼우기 좋은 분식집이다";
+
+    @BeforeEach
+    void setUp() {
+        restaurantRepository.save(createRestaurant("김밥천국","ko","stockpot","분식집"));
+        restaurantRepository.save(createRestaurant("맘스터치","eu","dinner_dining","햄버거집"));
+        restaurantRepository.save(createRestaurant("피자헛","eu","dinner_dining","피자집"));
+    }
 
     @DisplayName("음식점들이 모두 조회되는지 테스트한다")
     @Test
     void findAllRestaurant() {
         RestaurantListResponse response = restaurantService.findAllRestaurants();
 
-        assertThat(response.restaurantList().size()).isEqualTo(70);
+        assertThat(response.restaurantList().size()).isEqualTo(3);
     }
 
     @DisplayName("카테고리별로 음식점들이 조회되는지 테스트한다")
@@ -42,61 +47,64 @@ class RestaurantServiceTest {
         String category = "ko";
         RestaurantListResponse response = restaurantService.findAllRestaurantsByCategory(category);
 
-        assertThat(response.restaurantList().size()).isEqualTo(21);
+        assertThat(response.restaurantList().size()).isEqualTo(1);
     }
 
     @DisplayName("이름으로 음식점이 조회되는지 테스트한다")
     @Test
     void findRestaurantByName() {
-        String name = "밥은";
+        String name = "김밥천국";
         RestaurantResponse response = restaurantService.findRestaurantByName(name);
 
-        assertThat(response.restaurant().getName()).isEqualTo("밥은");
+        assertThat(response.restaurant().getName()).isEqualTo("김밥천국");
         assertThat(response.restaurant().getIcon()).isEqualTo("stockpot");
         assertThat(response.restaurant().getCategory()).isEqualTo("ko");
-        assertThat(response.restaurant().getContent()).isEqualTo("착한 가격에 많은 양, 거리도 학교 정문에서 가깝다");
+        assertThat(response.restaurant().getContent()).isEqualTo("분식집");
     }
 
     @DisplayName("아이디로 음식점이 조회되는지 테스트한다")
     @Test
     void findRestaurantById() {
-        Long id = 21L;
+        Long id = 1L;
         RestaurantResponse response = restaurantService.findRestaurantById(id);
 
-        assertThat(response.restaurant().getName()).isEqualTo("밥은");
+        assertThat(response.restaurant().getName()).isEqualTo("김밥천국");
         assertThat(response.restaurant().getIcon()).isEqualTo("stockpot");
         assertThat(response.restaurant().getCategory()).isEqualTo("ko");
-        assertThat(response.restaurant().getContent()).isEqualTo("착한 가격에 많은 양, 거리도 학교 정문에서 가깝다");
+        assertThat(response.restaurant().getContent()).isEqualTo("분식집");
     }
 
     @DisplayName("음식점이 생성되는지 테스트한다")
     @Test
     void createRestaurant() {
-        RestaurantRequest request = new RestaurantRequest(NAME, CATEGORY, ICON, CONTENT);
-//        Long name = restaurantService.createRestaurant(request);
+        RestaurantRequest request = new RestaurantRequest("설빙", "cf", "cafe", "빙수집");
+        Long id = restaurantService.createRestaurant(request);
 
+        assertThat(id).isEqualTo(4);
     }
 
     @DisplayName("음식점이 삭제되었는지 테스트한다")
     @Test
-    void deleteRestaurant(){
-        restaurantService.deleteRestaurant(ID);
+    void deleteRestaurant() {
+        restaurantService.deleteRestaurant(1L);
 
-        Mockito.verify(restaurantRepository).deleteById(ID);
+        assertThatThrownBy(() -> {
+            restaurantService.findRestaurantById(1L);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("음식점 정보가 수정되는지 테스트한다")
     @Test
-    void changeRestaurantInfo(){
-        String changedName = "맘스터치";
+    void changeRestaurantInfo() {
+        String changedName = "맥도날드";
         String changedCategory = "eu";
         String changedIcon = "lunch_dining";
-        String changedContent = "싸이버거로 대표되는 버거집";
+        String changedContent = "햄버거집";
         RestaurantRequest request = new RestaurantRequest(changedName, changedCategory, changedIcon, changedContent);
 
-        restaurantService.changeRestaurantInfo(ID,request);
+        restaurantService.changeRestaurantInfo(1L, request);
 
-        RestaurantResponse restaurant = restaurantService.findRestaurantById(ID);
+        RestaurantResponse restaurant = restaurantService.findRestaurantById(1L);
 
         assertThat(restaurant.restaurant().getName()).isEqualTo(changedName);
         assertThat(restaurant.restaurant().getCategory()).isEqualTo(changedCategory);
@@ -104,4 +112,12 @@ class RestaurantServiceTest {
         assertThat(restaurant.restaurant().getContent()).isEqualTo(changedContent);
     }
 
+    private Restaurant createRestaurant(String name, String category, String icon, String content){
+        return Restaurant.builder()
+                .name(name)
+                .category(category)
+                .icon(icon)
+                .content(content)
+                .build();
+    }
 }
