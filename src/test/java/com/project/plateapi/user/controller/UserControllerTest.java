@@ -17,6 +17,8 @@ import com.project.plateapi.user.domain.UserRepository;
 import com.project.plateapi.user.domain.Users;
 import com.project.plateapi.user.service.UserService;
 import com.project.plateapi.user_role.domain.UserRole;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,6 +76,8 @@ class UserControllerTest {
                 .name(NAME)
                 .nickname(NICKNAME)
                 .email(EMAIL)
+                .enabled(true)
+                .createdDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .build();
 
         Role role = new Role(1L, "USER");
@@ -95,7 +99,8 @@ class UserControllerTest {
     @DisplayName("회원가입이 정상적으로 되는지 테스트한다")
     @Test
     void signUp() throws Exception {
-        String content = objectMapper.writeValueAsString(new UserInfoRequest("0hee", "o01123", "김영희", "00", "0h22@naver.com"));
+        String content = objectMapper.writeValueAsString(
+                new UserInfoRequest("0hee", "o01123", "김영희", "00", "0h22@naver.com"));
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON)
