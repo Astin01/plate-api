@@ -6,12 +6,11 @@ import java.util.stream.Collectors;
 
 public record SuggestionListResponse(List<Suggestion> suggestionList) {
     public SuggestionListResponse(List<Suggestion> suggestionList) {
-        this.suggestionList = suggestionList.stream().map(suggestion -> {
-            Suggestion suggestions = new Suggestion();
-            suggestions.setId(suggestion.getId());
-            suggestions.setTitle(suggestion.getTitle());
-            suggestions.setClosed(suggestion.isClosed());
-            return suggestions;
-        }).collect(Collectors.toList());
+        this.suggestionList = suggestionList.stream().map(suggestion -> Suggestion.builder()
+                .id(suggestion.getId())
+                .title(suggestion.getTitle())
+                .content(suggestion.getContent())
+                .closed(suggestion.isClosed())
+                .build()).collect(Collectors.toList());
     }
 }
