@@ -69,6 +69,5 @@ public class RestaurantService {
                 .build();
 
         restaurant.update(updatedRestaurant);
-
     }
 }

@@ -55,7 +55,7 @@ public class DiscussionService {
     public DiscussionListResponseDto getAllDiscussion(boolean closed) {
         List<Discussion> discussionList = discussionRepository.findAllByClosed(closed);
 
-        return  new DiscussionListResponseDto(discussionList);
+        return new DiscussionListResponseDto(discussionList);
     }
 
     public DiscussionResponseDto getDiscussion(Long id) {

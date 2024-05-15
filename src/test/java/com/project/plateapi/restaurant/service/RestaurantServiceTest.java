@@ -28,9 +28,9 @@ class RestaurantServiceTest {
 
     @BeforeEach
     void setUp() {
-        restaurantRepository.save(createRestaurant("김밥천국","ko","stockpot","분식집"));
-        restaurantRepository.save(createRestaurant("맘스터치","eu","dinner_dining","햄버거집"));
-        restaurantRepository.save(createRestaurant("피자헛","eu","dinner_dining","피자집"));
+        restaurantRepository.save(createRestaurant("김밥천국", "ko", "stockpot", "분식집"));
+        restaurantRepository.save(createRestaurant("맘스터치", "eu", "dinner_dining", "햄버거집"));
+        restaurantRepository.save(createRestaurant("피자헛", "eu", "dinner_dining", "피자집"));
     }
 
     @DisplayName("음식점들이 모두 조회되는지 테스트한다")
@@ -112,7 +112,7 @@ class RestaurantServiceTest {
         assertThat(restaurant.restaurant().getContent()).isEqualTo(changedContent);
     }
 
-    private Restaurant createRestaurant(String name, String category, String icon, String content){
+    private Restaurant createRestaurant(String name, String category, String icon, String content) {
         return Restaurant.builder()
                 .name(name)
                 .category(category)

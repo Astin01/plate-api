@@ -63,7 +63,7 @@ class UserServiceTest {
     @DisplayName("회원 가입을 한다")
     @Test
     void signUp() {
-        userService.createUser(new UserInfoRequest("0h22","oh12234", "oh22@naver.com", "김영희","안녕희"));
+        userService.createUser(new UserInfoRequest("0h22", "oh12234", "oh22@naver.com", "김영희", "안녕희"));
         Users user = userRepository.findByUserId("0h22");
 
         assertThat(user.getName()).isEqualTo("김영희");
@@ -99,7 +99,7 @@ class UserServiceTest {
             Role role = new Role(1L, "USER");
 
             UserRole userRole = new UserRole();
-            userRole.setRole(savedHost,role);
+            userRole.setRole(savedHost, role);
 
             List<UserRole> roles = new ArrayList<>();
             roles.add(userRole);

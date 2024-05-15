@@ -82,7 +82,7 @@ public class UserService {
         Role role = em.find(Role.class, 1L);
 
         UserRole userRole = new UserRole();
-        userRole.setRole(user,role);
+        userRole.setRole(user, role);
 
         em.persist(userRole);
 

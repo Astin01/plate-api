@@ -47,9 +47,9 @@ public class DiscussionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DiscussionResponseDto> getDiscussion(@PathVariable Long id) {
-         DiscussionResponseDto response = service.getDiscussion(id);
+        DiscussionResponseDto response = service.getDiscussion(id);
 
-         return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response);
     }
 
     @Secured("USER")
@@ -63,7 +63,8 @@ public class DiscussionController {
 
     @Secured("USER")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDiscussion(@AuthenticationPrincipal CustomUser customUser, @PathVariable long id) {
+    public ResponseEntity<Void> deleteDiscussion(@AuthenticationPrincipal CustomUser customUser,
+                                                 @PathVariable long id) {
         service.deleteDiscussion(customUser, id);
 
         return ResponseEntity.noContent().build();
