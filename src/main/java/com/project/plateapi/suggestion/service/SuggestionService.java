@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,14 +53,14 @@ public class SuggestionService {
                 .restaurant(restaurant)
                 .build();
 
-        suggestionRepository.save(suggestion);
+        Suggestion saved = suggestionRepository.save(suggestion);
 
-        return id;
+        return saved.getId();
     }
 
     @Transactional
     public void editSuggestion(CustomUser customUser, Long suggestion_id,
-                                               SuggestionRequest requestDto) {
+                               SuggestionRequest requestDto) {
         Suggestion suggestion = suggestionRepository.findById(suggestion_id)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -85,7 +84,7 @@ public class SuggestionService {
     }
 
     @Transactional
-    public Long putSuggestionToRestaurant(Long id) {
+    public void putSuggestionToRestaurant(Long id) {
         Suggestion suggestion = suggestionRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -97,8 +96,6 @@ public class SuggestionService {
         restaurant.setContent(suggestion.getContent());
 
         restaurant.update(restaurant);
-
-        return id;
     }
 
     private boolean notUser(CustomUser customUser, Suggestion suggestion) {
