@@ -1,6 +1,6 @@
 package com.project.plateapi.comment.service;
 
-import com.project.plateapi.comment.controller.dto.request.CommentDto;
+import com.project.plateapi.comment.controller.dto.request.CommentRequestDto;
 import com.project.plateapi.comment.domain.Comment;
 import com.project.plateapi.comment.domain.CommentRepository;
 import com.project.plateapi.comment.service.dto.response.CommentResponseDto;
@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +31,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void createComment(CustomUser customUser, Long id, CommentDto commentdto) {
+    public Long createComment(CustomUser customUser, Long id, CommentRequestDto commentdto) {
         final Users user = customUser.getUser();
         final Discussion discussion = discussionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("댓글 쓰기 실패."));
@@ -45,16 +44,18 @@ public class CommentService {
                 .createdDate(createdDate)
                 .build();
 
-        commentRepository.save(comment);
+        Comment savedComment = commentRepository.save(comment);
+
+        return savedComment.getId();
     }
 
     @Transactional
-    public void updateComment(Long id, CommentDto commentdto) {
+    public void updateComment(Long id, CommentRequestDto request) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id= " + id));
         String modifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
-        comment.update(commentdto.comment(), modifiedDate);
+        comment.update(request.comment(), modifiedDate);
     }
 
     @Transactional
