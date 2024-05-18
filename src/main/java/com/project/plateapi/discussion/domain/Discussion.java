@@ -1,6 +1,7 @@
 package com.project.plateapi.discussion.domain;
 
 import com.project.plateapi.comment.domain.Comment;
+import com.project.plateapi.discussion.controller.dto.request.DiscussionRequestDto;
 import com.project.plateapi.user.domain.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,8 +58,8 @@ public class Discussion {
     @OneToMany(mappedBy = "discussion", fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
-    public void edit(Discussion discussion) {
-        this.title = discussion.getTitle();
-        this.content = discussion.getContent();
+    public void edit(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 }
