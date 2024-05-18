@@ -5,10 +5,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity(name = "icon")
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
 public class Icon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +30,10 @@ public class Icon {
 
     @Column(name = "LINK")
     private String link;
+
+    public void update(String icon, String name, String link) {
+        this.icon = icon;
+        this.name = name;
+        this.link = link;
+    }
 }
