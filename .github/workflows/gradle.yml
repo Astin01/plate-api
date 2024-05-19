@@ -47,7 +47,7 @@ jobs:
       run: chmod +x ./gradlew
         
     - name: Build
-      run: ./gradlew build -x test
+      run: ./gradlew build
 
     - name: docker image build
       run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/zero-plate-api .
