@@ -49,9 +49,9 @@ jobs:
           echo "${{ secrets.APPLICATION_PROD }}" | base64 --decode > src/main/resources/application-prod.properties
           find src
           
-    - name: Set TEST_PROP
+    - name: Set TEST_YML
       run: |
-          echo "${{ secrets.APPLICATION_TEST }}" | base64 --decode > src/main/resources/application-test.properties
+          echo "${{ secrets.APPLICATION_TEST }}" | base64 --decode > src/main/resources/application-test.yml
           find src
           
     - name: Grant execute permission for gradlew
