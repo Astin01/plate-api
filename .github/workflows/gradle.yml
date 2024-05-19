@@ -36,11 +36,22 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
+
+    - name: Set PROP
+      run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.APPLICATION_PROP }}" | base64 --decode > src/main/resources/application.properties
+          find src
           
     - name: Set PROD_PROP
       run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.APPLICATION_PROP }}" | base64 --decode > src/main/resources/application-prod.properties
+          echo "${{ secrets.APPLICATION_PROD }}" | base64 --decode > src/main/resources/application-prod.properties
+          find src
+          
+    - name: Set TEST_PROP
+      run: |
+          echo "${{ secrets.APPLICATION_TEST }}" | base64 --decode > src/main/resources/application-test.properties
           find src
           
     - name: Grant execute permission for gradlew
