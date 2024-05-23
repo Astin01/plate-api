@@ -1,11 +1,5 @@
 package com.project.plateapi.user.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -13,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.plateapi.role.domain.Role;
 import com.project.plateapi.security.custom.dto.CustomUser;
 import com.project.plateapi.user.controller.dto.request.UserInfoRequest;
-import com.project.plateapi.user.domain.UserRepository;
 import com.project.plateapi.user.domain.Users;
 import com.project.plateapi.user.service.UserService;
 import com.project.plateapi.user_role.domain.UserRole;
@@ -27,10 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,7 +30,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -94,6 +84,8 @@ class UserControllerTest {
         Authentication auth = new UsernamePasswordAuthenticationToken(customUser, null, customUser.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(auth);
+
+        saveUsers("ace1225", "1234", "ace1225@naver.com", "김철수", "불주먹");
     }
 
     @DisplayName("회원가입이 정상적으로 되는지 테스트한다")
@@ -152,5 +144,9 @@ class UserControllerTest {
                 .andExpect(status().is(HttpStatus.NO_CONTENT.value()));
     }
 
+    private void saveUsers(String userId, String userPassword, String email, String name, String nickname) {
+        UserInfoRequest request = new UserInfoRequest(userId, userPassword, email, name, nickname);
+        userService.createUser(request);
+    }
 
 }
