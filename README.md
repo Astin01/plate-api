@@ -54,6 +54,6 @@ Infra : Docker / Github Action
 <img width="100%" alt="image" src="https://github.com/Astin01/plate-web/assets/60924984/1f09663b-5e95-40c8-839d-22f739ff39e6">
 
 ## 연관 레포지토리
-- [zeroplate_back](https://github.com/Astin01/plate-api/tree/main)
+- [zeroplate_front](https://github.com/Astin01/plate-web)
 
 
