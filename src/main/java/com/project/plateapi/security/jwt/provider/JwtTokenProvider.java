@@ -63,7 +63,7 @@ public class JwtTokenProvider {
             String jwt = authHeader.replace(JwtConstants.TOKEN_PREFIX, ""); // "Bearer " + jwt  ➡ jwt 추출
 
             Jws<Claims> parsedToken = Jwts.parser() //jwt 파싱
-                    .verifyWith(getShaKey())
+                    .setSigningKey(getShaKey())
                     .build()
                     .parseSignedClaims(jwt);
             log.info("parsedToken : " + parsedToken);

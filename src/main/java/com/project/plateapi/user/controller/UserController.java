@@ -2,12 +2,11 @@ package com.project.plateapi.user.controller;
 
 import com.project.plateapi.security.custom.dto.CustomUser;
 import com.project.plateapi.user.controller.dto.request.UserInfoRequest;
-import com.project.plateapi.user.domain.Users;
+import com.project.plateapi.user.dto.request.UserPriority;
+import com.project.plateapi.user.dto.response.UserPreferenceResponse;
 import com.project.plateapi.user.service.UserService;
 import com.project.plateapi.user.service.dto.response.UserInfoResponse;
 import jakarta.validation.Valid;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -59,6 +58,20 @@ public class UserController {
         service.updateUser(dto);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/preferences")
+    public ResponseEntity<Long> calculateUserPreferences(@AuthenticationPrincipal CustomUser customUser,@RequestBody UserPriority userPriority) {
+        Long preferenceId = service.calculatePreferences(customUser.getUser(), userPriority);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(preferenceId);
+    }
+
+    @GetMapping("/preferences/{preferenceId}")
+    public ResponseEntity<UserPreferenceResponse> getUserPreferences(@PathVariable Long preferenceId) {
+        UserPreferenceResponse response = service.getUserPreferences(preferenceId);
+
+        return ResponseEntity.ok(response);
     }
 
 }

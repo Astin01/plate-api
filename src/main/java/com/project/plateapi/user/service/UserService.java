@@ -3,24 +3,30 @@ package com.project.plateapi.user.service;
 import com.project.plateapi.role.domain.Role;
 import com.project.plateapi.security.custom.dto.CustomUser;
 import com.project.plateapi.user.controller.dto.request.UserInfoRequest;
+import com.project.plateapi.user.domain.UserPreference;
+import com.project.plateapi.user.domain.UserPreferenceRepository;
 import com.project.plateapi.user.domain.UserRepository;
 import com.project.plateapi.user.domain.Users;
+import com.project.plateapi.user.dto.request.UserPriority;
+import com.project.plateapi.user.dto.response.UserPreferenceResponse;
 import com.project.plateapi.user.exception.UserNotFoundException;
 import com.project.plateapi.user.service.dto.response.UserInfoResponse;
 import com.project.plateapi.user_role.domain.UserRole;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -31,14 +37,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-
 public class UserService {
 
     private final UserRepository userRepository;
     private final EntityManager em;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
-
+    private final UserPreferenceRepository userPreferenceRepository;
+    private static final Map<String, Double> PRIORITY_WEIGHTS = new HashMap<>() {{
+        put("highest", 0.4);
+        put("high", 0.25);
+        put("medium", 0.15);
+        put("low", 0.1);
+        put("lowest", 0.05);
+    }};
 
     @Transactional
     public void updateUser(UserInfoRequest dto) {
@@ -131,8 +143,72 @@ public class UserService {
         UserInfoResponse dto = new UserInfoResponse(user);
 
         if (user.getUserId() == null) {
-            throw new UserNotFoundException("Not user");
+            throw new UserNotFoundException("유저가 존재하지 않습니다.");
         }
         return dto;
+    }
+
+    @Transactional
+    public Long calculatePreferences(Users user, UserPriority userPriority) {
+        Map<String, Double> preferences = new HashMap<>();
+        double totalWeight = 0.0;
+
+        // 각 항목별 우선순위에 따른 가중치 설정
+        preferences.put("taste", PRIORITY_WEIGHTS.get(userPriority.getTaste()));
+        preferences.put("price", PRIORITY_WEIGHTS.get(userPriority.getPrice()));
+        preferences.put("service", PRIORITY_WEIGHTS.get(userPriority.getService()));
+        preferences.put("fresh", PRIORITY_WEIGHTS.get(userPriority.getFresh()));
+        preferences.put("interior", PRIORITY_WEIGHTS.get(userPriority.getInterior()));
+        preferences.put("quantity", PRIORITY_WEIGHTS.get(userPriority.getQuantity()));
+        preferences.put("group", PRIORITY_WEIGHTS.get(userPriority.getGroup()));
+        preferences.put("special", PRIORITY_WEIGHTS.get(userPriority.getSpecial()));
+        preferences.put("clean", PRIORITY_WEIGHTS.get(userPriority.getClean()));
+
+        // 총 가중치 계산
+        totalWeight = preferences.values().stream().mapToDouble(Double::doubleValue).sum();
+
+        // 정규화 (총합이 1이 되도록 비중 조정)
+        double finalTotalWeight = totalWeight;
+        preferences.replaceAll((key, value) -> value / finalTotalWeight);
+
+        UserPreference userPreferenceRequest = UserPreference.builder()
+                .user(user)
+                .taste(BigDecimal.valueOf(preferences.get("taste")))
+                .price(BigDecimal.valueOf(preferences.get("price")))
+                .service(BigDecimal.valueOf(preferences.get("service")))
+                .fresh(BigDecimal.valueOf(preferences.get("fresh")))
+                .interior(BigDecimal.valueOf(preferences.get("interior")))
+                .quantity(BigDecimal.valueOf(preferences.get("quantity")))
+                .group(BigDecimal.valueOf(preferences.get("group")))
+                .special(BigDecimal.valueOf(preferences.get("special")))
+                .clean(BigDecimal.valueOf(preferences.get("clean")))
+                .build();
+                
+
+        UserPreference userPreference = userPreferenceRepository.save(userPreferenceRequest);
+
+       return userPreference.getId();
+    }
+
+    public UserPreferenceResponse getUserPreferences(Long userId) {
+        UserPreference userPreference = userPreferenceRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException("유저가 존재하지 않습니다."));
+
+        return UserPreferenceResponse.builder()
+                .userId(userId)
+                .preferences(Map.of(
+                        "taste", userPreference.getTaste().doubleValue(),
+                        "price", userPreference.getPrice().doubleValue(),
+                        "service", userPreference.getService().doubleValue(),
+                        "fresh", userPreference.getFresh().doubleValue(),
+                        "interior", userPreference.getInterior().doubleValue(),
+                        "quantity", userPreference.getQuantity().doubleValue(),
+                        "group", userPreference.getGroup().doubleValue(),
+                        "special", userPreference.getSpecial().doubleValue(),
+                        "clean", userPreference.getClean().doubleValue()
+                ))
+                .build();
+
+
     }
 }
