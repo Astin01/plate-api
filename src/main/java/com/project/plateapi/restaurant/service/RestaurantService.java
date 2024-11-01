@@ -1,12 +1,21 @@
 package com.project.plateapi.restaurant.service;
 
-import com.project.plateapi.restaurant.controller.dto.request.RestaurantRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.plateapi.restaurant.dto.request.RestaurantRequest;
 import com.project.plateapi.restaurant.domain.Restaurant;
 import com.project.plateapi.restaurant.domain.RestaurantRepository;
 import com.project.plateapi.restaurant.service.dto.response.RestaurantListResponse;
 import com.project.plateapi.restaurant.service.dto.response.RestaurantResponse;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.project.plateapi.restaurant.support.RestaurantConnector;
+import com.project.plateapi.user.domain.UserPreference;
+import com.project.plateapi.user.domain.UserPreferenceRepository;
+import com.project.plateapi.user.domain.Users;
+import com.project.plateapi.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
+    private final RestaurantConnector restaurantConnector;
+    private final UserPreferenceRepository userPreferenceRepository;
 
     public RestaurantListResponse findAllRestaurants() {
         return new RestaurantListResponse(restaurantRepository.findAll());
@@ -69,5 +80,17 @@ public class RestaurantService {
                 .build();
 
         restaurant.update(updatedRestaurant);
+    }
+
+    public RestaurantListResponse getAllRecommendedRestaurantsByCategory(Users user, String category) throws JsonProcessingException {
+        UserPreference userPreference = userPreferenceRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new UserNotFoundException("유저가 존재하지 않습니다."));
+        RestaurantRecommendListResponse response =restaurantConnector.requestRecommendation(userPreference,category);
+
+        List<Restaurant> restaurantListResponse = response.getRestaurantRecommendList().stream()
+                .map(recommendation -> restaurantRepository.findByName(recommendation.getName()))
+                .toList();
+
+        return new RestaurantListResponse(restaurantListResponse);
     }
 }

@@ -1,13 +1,17 @@
 package com.project.plateapi.restaurant.controller;
 
-import com.project.plateapi.restaurant.controller.dto.request.RestaurantRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.plateapi.restaurant.dto.request.RestaurantRequest;
 import com.project.plateapi.restaurant.service.RestaurantService;
 import com.project.plateapi.restaurant.service.dto.response.RestaurantListResponse;
 import com.project.plateapi.restaurant.service.dto.response.RestaurantResponse;
+import com.project.plateapi.security.custom.dto.CustomUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +45,15 @@ public class RestaurantController {
     @GetMapping("/category/{category}")
     public ResponseEntity<RestaurantListResponse> findAllRestaurantsByCategory(@PathVariable String category) {
         RestaurantListResponse response = service.findAllRestaurantsByCategory(category);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Secured({"USER", "ADMIN"})
+    @GetMapping("/category/{category}/recommend")
+    public ResponseEntity<RestaurantListResponse> getAllRecommendedRestaurantsByCategory(@AuthenticationPrincipal CustomUser customUser,
+                                                                                         @PathVariable String category) throws JsonProcessingException {
+        RestaurantListResponse response = service.getAllRecommendedRestaurantsByCategory(customUser.getUser(), category);
 
         return ResponseEntity.ok(response);
     }

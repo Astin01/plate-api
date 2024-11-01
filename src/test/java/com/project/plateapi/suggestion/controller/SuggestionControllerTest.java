@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.plateapi.restaurant.controller.dto.request.RestaurantRequest;
+import com.project.plateapi.restaurant.dto.request.RestaurantRequest;
 import com.project.plateapi.restaurant.service.RestaurantService;
 import com.project.plateapi.role.domain.Role;
 import com.project.plateapi.security.custom.dto.CustomUser;

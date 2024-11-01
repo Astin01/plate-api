@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.plateapi.restaurant.controller.dto.request.RestaurantRequest;
+import com.project.plateapi.restaurant.dto.request.RestaurantRequest;
 import com.project.plateapi.restaurant.service.RestaurantService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

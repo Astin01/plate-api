@@ -3,7 +3,7 @@ package com.project.plateapi.restaurant.service;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import com.project.plateapi.restaurant.controller.dto.request.RestaurantRequest;
+import com.project.plateapi.restaurant.dto.request.RestaurantRequest;
 import com.project.plateapi.restaurant.domain.Restaurant;
 import com.project.plateapi.restaurant.domain.RestaurantRepository;
 import com.project.plateapi.restaurant.service.dto.response.RestaurantListResponse;
