@@ -1,4 +1,4 @@
-# [Zero Plate Wiki](https://zero-plate.netlify.app/)
+# Zero Plate Wiki
 공릉동 음식점에 대한 정보를 정리한 위키 
 
 ## 주요기능
@@ -29,14 +29,14 @@
 
 ## 프로젝트 기술 스택
 ### 프론트 엔드 
-메인: react, javascript
+메인: React, Javascript
 
-스타일: react-bootstrap
+스타일: React-Bootstrap
 
-상태 관리: context API
+상태 관리: Context API
 
 ### 백엔드
-Language: Java 17
+Language: Java
 
 Framework: Spring Boot / Spring MVC
 
